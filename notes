@@ -1,0 +1,8 @@
+verilator  -I./rtl -cc rtl/manchester_serial_top.v -exe rtl/tb_manchester_encoder.v  --timing 
+make -C obj_dir -f Vmanchester_serial_top.mk  Vmanchester_serial_top
+
+
+iverilog -y ./rtl -o tb_manchester_encoder rtl/tb_manchester_encoder.v  rtl/manchester_serial_top.v
+
+
+vvp tb_manchester_encoder

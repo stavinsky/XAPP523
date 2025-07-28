@@ -1,0 +1,31 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/dev/dev/fpga/projects/manchester/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+IKI_DLLESPEC	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^ #define IKI_DLLESPEC /;"	d	file:
+IKI_DLLESPEC	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^ #define IKI_DLLESPEC$/;"	d	file:
+IKI_DLLESPEC	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^ #define IKI_DLLESPEC /;"	d	file:
+IKI_DLLESPEC	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^ #define IKI_DLLESPEC$/;"	d	file:
+NumRelocateId	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^const int NumRelocateId= 12;$/;"	v	typeref:typename:const int
+NumRelocateId	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^const int NumRelocateId= 26;$/;"	v	typeref:typename:const int
+alloca	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^#define alloca /;"	d	file:
+alloca	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^#define alloca /;"	d	file:
+funcTab	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^funcp funcTab[12] = {(funcp)execute_2, (funcp)execute_4, (funcp)execute_5, (funcp)execute_6, (fu/;"	v	typeref:typename:funcp[12]
+funcTab	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^funcp funcTab[26] = {(funcp)execute_8, (funcp)execute_9, (funcp)execute_21, (funcp)execute_22, (/;"	v	typeref:typename:funcp[26]
+funcp	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^typedef void (*funcp)(char *, char *);$/;"	t	typeref:typename:void (*)(char *,char *)	file:
+funcp	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^typedef void (*funcp)(char *, char *);$/;"	t	typeref:typename:void (*)(char *,char *)	file:
+main	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^int main(int argc, char **argv)$/;"	f	typeref:typename:int
+main	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^int main(int argc, char **argv)$/;"	f	typeref:typename:int
+relocate	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^void relocate(char *dp)$/;"	f	typeref:typename:void
+relocate	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^void relocate(char *dp)$/;"	f	typeref:typename:void
+sensitize	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^void sensitize(char *dp)$/;"	f	typeref:typename:void
+sensitize	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^void sensitize(char *dp)$/;"	f	typeref:typename:void
+simulate	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/counter_behav/obj/xsim_1.c	/^void simulate(char *dp)$/;"	f	typeref:typename:void
+simulate	manchester/manchester.sim/sim_1/behav/xsim/xsim.dir/tb_manchester_encoder_behav/obj/xsim_1.c	/^void simulate(char *dp)$/;"	f	typeref:typename:void

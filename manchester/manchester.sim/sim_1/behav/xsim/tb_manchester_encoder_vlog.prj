@@ -1,0 +1,12 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../../rtl/manchester_encoder.v" \
+"../../../../../rtl/manchester_serial_top.v" \
+"../../../../../rtl/shift_register_16_to_1.v" \
+"../../../../../rtl/tb_manch.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

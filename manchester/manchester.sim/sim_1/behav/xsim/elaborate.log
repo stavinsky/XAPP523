@@ -1,0 +1,17 @@
+Vivado Simulator v2024.2.2
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /tools/Xilinx/Vivado/2024.2/bin/unwrapped/lnx64.o/xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_manchester_encoder_behav xil_defaultlib.tb_manchester_encoder xil_defaultlib.glbl -log elaborate.log 
+Using 8 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.manchester_encoder
+Compiling module xil_defaultlib.shift_register_16_to_1
+Compiling module xil_defaultlib.manchester_serial_top
+Compiling module xil_defaultlib.tb_manchester_encoder
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_manchester_encoder_behav
