@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // verilator lint_off INITIALDLY
-
+`include "assert_utils.vh"
 module tb_manchester_escape;
   localparam DATA_WIDTH = 8;
   localparam CLK_PERIOD = 10;
@@ -18,7 +18,8 @@ module tb_manchester_escape;
   wire                      m_axis_tvalid;
   reg                       m_axis_tready;
   wire                      m_axis_tlast;
-
+  reg [DATA_WIDTH-1:0]expected_data[0:10];
+  integer verification_counter;
   manchester_escape #(
                       .DATA_WIDTH(DATA_WIDTH)
                     ) dut (
@@ -58,6 +59,18 @@ module tb_manchester_escape;
     begin
       $dumpfile("tb_manchester_escape.vcd");
       $dumpvars(0, tb_manchester_escape);
+
+      expected_data[0] = 8'he5; // escape
+      expected_data[1] = 8'hd5; // start_word
+      expected_data[2] = 8'h11;
+      expected_data[3] = 8'h22;
+      expected_data[4] = 8'h33;
+      expected_data[5] = 8'he5; // escape escape symbol
+      expected_data[6] = 8'he5; // escaped escape symbol
+      expected_data[7] = 8'h44;
+      verification_counter = 0;
+
+
       s_axis_tdata   = 0;
       s_axis_tvalid  = 0;
       s_axis_tlast   = 0;
@@ -81,7 +94,13 @@ module tb_manchester_escape;
     begin
       if (m_axis_tvalid && m_axis_tready)
         begin
-          $display("OUTPUT: %02X%s", m_axis_tdata, m_axis_tlast ? " [TLAST]" : "");
+          // $display("OUTPUT: %02X%s", m_axis_tdata, m_axis_tlast ? " [TLAST]" : "");
+          if (verification_counter == 6)
+            begin
+              `ASSERT_EQ(1, m_axis_tlast, "tlast asertion");
+            end
+          `ASSERT_EQ(expected_data[verification_counter], m_axis_tdata, "");
+          verification_counter <= verification_counter + 1;
         end
     end
 

@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
-module tb_manchester_encoder;
+`include "assert_utils.vh"
+// verilator lint_off INITIALDLY
+module tb_manchester_serializer;
 
   // Inputs
   reg aclk;
@@ -13,6 +15,8 @@ module tb_manchester_encoder;
   wire [7:0]data_out;
   wire decoder_valid;
   localparam CLK_PERIOD = 10;
+  reg [7:0] expected_data [0:10];
+  integer  verification_counter;
 
   task send_axi_word;
     input [7:0] data;
@@ -28,7 +32,7 @@ module tb_manchester_encoder;
     end
   endtask
 
-  manchester_serial_top manch_top(
+  manchester_serializer manch_top(
                           .aclk(aclk),
                           .aresetn(aresetn),
                           .s_axis_tvalid(s_axis_tvalid),
@@ -36,7 +40,7 @@ module tb_manchester_encoder;
                           .serial_out(serial_out),
                           .s_axis_tready(s_axis_tready)
                         );
-  manchester_decoder decode (
+  manchester_decoder decoder (
                        .clk(aclk),
                        .rst_n(aresetn),
                        .manchester_in(serial_out),
@@ -48,11 +52,14 @@ module tb_manchester_encoder;
   initial
     aclk = 0;
   always #(CLK_PERIOD/2) aclk = ~aclk;
-  integer  i = 0;
   initial
     begin
-      $dumpfile("tb_manchester_encoder.vcd");   // name of the waveform file
-      $dumpvars(0, tb_manchester_encoder); // level 0 dumps all vars in module
+      $dumpfile("tb_manchester_serializer.vcd");   // name of the waveform file
+      $dumpvars(0, tb_manchester_serializer); // level 0 dumps all vars in module
+      expected_data[0] =8'b11110000;
+      expected_data[1] =8'b00001111;
+      expected_data[2] =8'b10101010;
+      verification_counter = 0;
 
 
       // Initial values
@@ -73,7 +80,8 @@ module tb_manchester_encoder;
     begin
       if (decoder_valid)
         begin
-          $display("OUTPUT: %02X", data_out);
+          `ASSERT_EQ(expected_data[verification_counter], data_out, "");
+          verification_counter <= verification_counter + 1;
         end
     end
 endmodule

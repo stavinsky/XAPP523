@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module manchester_serial_top (
+module manchester_serializer (
     input  wire        aclk,
     input  wire        aresetn,
     input  wire [7:0]  s_axis_tdata,
