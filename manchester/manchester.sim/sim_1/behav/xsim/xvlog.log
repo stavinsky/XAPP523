@@ -1,8 +1,0 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "/home/dev/dev/fpga/projects/manchester/rtl/manchester_encoder.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module manchester_encoder
-INFO: [VRFC 10-2263] Analyzing Verilog file "/home/dev/dev/fpga/projects/manchester/rtl/manchester_serial_top.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module manchester_serial_top
-INFO: [VRFC 10-2263] Analyzing Verilog file "/home/dev/dev/fpga/projects/manchester/rtl/shift_register_16_to_1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module shift_register_16_to_1
-INFO: [VRFC 10-2263] Analyzing Verilog file "/home/dev/dev/fpga/projects/manchester/rtl/tb_manch.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module tb_manchester_encoder

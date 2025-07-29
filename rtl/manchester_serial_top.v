@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 module manchester_serial_top (
-    input  wire       clk,
-    input  wire       rst,
-    input  wire       valid,
-    input  wire [7:0] data_in,
-    output wire       serial_out,
-    output wire       ready
+    input  wire        aclk,
+    input  wire        aresetn,
+    input  wire [7:0]  s_axis_tdata,
+    input  wire        s_axis_tvalid,
+    output wire        s_axis_tready,
+    output wire        serial_out
   );
 
   wire [15:0] encoded_word;
@@ -18,32 +18,30 @@ module manchester_serial_top (
                      );
 
   shift_register_16_to_1 shift (
-                           .clk(clk),
-                           .rst(rst),
+                           .clk(aclk),
+                           .rst(!aresetn),
                            .load(load_shift),
                            .data_in(encoded_word),
                            .bit_out(serial_out),
-                           .ready(ready)
+                           .ready(s_axis_tready)
                          );
 
-  always @(posedge clk)
+  always @(posedge aclk)
     begin
-      if (rst)
+      if (!aresetn)
 
         begin
           load_shift <= 0;
         end
       else
         begin
-          local_data_in <= data_in;
-          if (ready && valid ) begin
-                load_shift <= 1; 
-          end
-          else begin
-            load_shift <=0; 
-          end
+          load_shift <=0;
 
-
+          if (s_axis_tready && s_axis_tvalid )
+            begin
+              local_data_in <= s_axis_tdata;
+              load_shift <= 1;
+            end
         end
     end
 endmodule

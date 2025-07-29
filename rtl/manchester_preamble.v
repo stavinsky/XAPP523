@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module manchester_preamble #(
     parameter integer DATA_WIDTH = 8
   )(
@@ -20,7 +21,9 @@ module manchester_preamble #(
   localparam IDLE         = 2'b00,
              SEND_PREAMBLE = 2'b01,
              SEND_START    = 2'b10,
-             SEND_DATA     = 2'b11;
+             SEND_DATA     = 2'b11,
+             START_WORD = 8'hD5,
+             PREAMBLE_PATTERN = 8'hAA;
 
   reg [1:0] state;
   reg preamble_sent;
@@ -60,7 +63,7 @@ module manchester_preamble #(
                     state <= SEND_PREAMBLE;
                     preamble_cnt <= 2;
                     m_axis_tvalid_r <= 1;
-                    m_axis_tdata_r <= 8'hAA;
+                    m_axis_tdata_r <= PREAMBLE_PATTERN;
                   end
               end
             SEND_PREAMBLE:
@@ -72,7 +75,7 @@ module manchester_preamble #(
                       begin
                         preamble_sent <= 1;
                         state <= SEND_START;
-                        m_axis_tdata_r <=8'hD5;
+                        m_axis_tdata_r <=START_WORD;
                       end
                   end
               end
