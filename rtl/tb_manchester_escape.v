@@ -19,24 +19,23 @@ module tb_manchester_escape;
   reg                       m_axis_tready;
   wire                      m_axis_tlast;
 
-  manchester_preamble #(
-                        .DATA_WIDTH(DATA_WIDTH)
-                      ) dut (
-                        .aclk           (aclk),
-                        .aresetn        (aresetn),
-                        .s_axis_tdata   (s_axis_tdata),
-                        .s_axis_tvalid  (s_axis_tvalid),
-                        .s_axis_tready  (s_axis_tready),
-                        .s_axis_tlast   (s_axis_tlast),
-                        .m_axis_tdata   (m_axis_tdata),
-                        .m_axis_tvalid  (m_axis_tvalid),
-                        .m_axis_tready  (m_axis_tready),
-                        .m_axis_tlast   (m_axis_tlast)
-                      );
+  manchester_escape #(
+                      .DATA_WIDTH(DATA_WIDTH)
+                    ) dut (
+                      .aclk           (aclk),
+                      .aresetn        (aresetn),
+                      .s_axis_tdata   (s_axis_tdata),
+                      .s_axis_tvalid  (s_axis_tvalid),
+                      .s_axis_tready  (s_axis_tready),
+                      .s_axis_tlast   (s_axis_tlast),
+                      .m_axis_tdata   (m_axis_tdata),
+                      .m_axis_tvalid  (m_axis_tvalid),
+                      .m_axis_tready  (m_axis_tready),
+                      .m_axis_tlast   (m_axis_tlast)
+                    );
   initial
     aclk = 0;
   always #(CLK_PERIOD/2) aclk = ~aclk;
-  integer  done = 0;
   task send_axi_word;
     input [7:0] data;
     input       last;
