@@ -1,4 +1,8 @@
-module  manchester_decoder(
+module  manchester_decoder #(
+    parameter FRAME_SIZE=64,
+    parameter START_WORD =8'hD5,
+    parameter PREAMBLE_PATTERN = 8'hAA
+  )(
     input  wire        aclk,
     input  wire        aresetn,
     input  wire        manchester_in,
@@ -17,42 +21,56 @@ module  manchester_decoder(
   reg [7:0]m_axis_tdata_r;
   assign m_axis_tdata = m_axis_tdata_r;
   reg skip;
+  reg word_valid;
+  reg in_transaction;
+  reg [8:0] word_counter;
   always @(posedge aclk)
     begin
       if (!aresetn)
         begin
           bit_count <= 0;
           shift_reg <= 0;
+          word_valid <= 0;
+          in_transaction <= 0;
+          word_counter <= 0;
         end
       else
         begin
           prev_in <= manchester_in;
-          begin
-            skip <= 0;
-            if (prev_in ^ manchester_in && !skip)
-              begin
-                skip <= 1;
-                shift_reg <= {shift_reg[6:0], manchester_in};
-                bit_count <= bit_count + 1;
-              end
-          end
+          skip <= 0;
+          word_valid <= 0;
+          if (prev_in ^ manchester_in && !skip)
+            begin
+              skip <= 1;
+              shift_reg <= {shift_reg[6:0], manchester_in};
+              bit_count <= bit_count + 1;
+              if (bit_count == 7)
+                begin
+                  word_valid <= 1;
+                  word_counter <= word_counter + 1;
+                end
+              if (!in_transaction && shift_reg == START_WORD)
+                begin
+                  word_valid <=0;
+                  bit_count <=1;
+                  word_counter <= 0;
+                  in_transaction <= 1;
+                end
+            end
         end
     end
-  reg [2:0]bit_count_latch;
   always@(posedge aclk)
     begin
       if (!aresetn)
         begin
           m_axis_tvalid_r <= 0;
-          bit_count_latch <= 0;
         end
       else
         begin
-          bit_count_latch <= bit_count;
-          if (bit_count_latch == 7 && bit_count == 0)
+          if (word_valid && in_transaction)
             begin
-              m_axis_tdata_r <= shift_reg;
               m_axis_tvalid_r <= 1;
+              m_axis_tdata_r <= shift_reg;
             end
           if (m_axis_tvalid_r && m_axis_tready )
             begin

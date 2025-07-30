@@ -69,6 +69,11 @@ module tb_manchester_serializer;
       aresetn        = 0;
       repeat (3) @(posedge aclk);
       aresetn = 1;
+
+      send_axi_word(8'hAA);
+      send_axi_word(8'hAA);
+      send_axi_word(8'hD5);
+
       send_axi_word(8'b11110000);
       send_axi_word(8'b00001111);
       send_axi_word(8'b10101010);
@@ -82,7 +87,7 @@ module tb_manchester_serializer;
         begin
           $display("Cycle %0t: m_axis_tvalid = %b (as bits)", $time, m_axis_tvalid);
 
-          `ASSERT_EQ(expected_data[verification_counter], m_axis_tdata, "");
+          `ASSERT_EQ(m_axis_tdata, expected_data[verification_counter],"");
           verification_counter <= verification_counter + 1;
         end
     end
