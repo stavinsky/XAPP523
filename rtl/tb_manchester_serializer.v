@@ -12,8 +12,9 @@ module tb_manchester_serializer;
   // Outputs
   wire s_axis_tready;
   wire serial_out;
-  wire [7:0]data_out;
-  wire decoder_valid;
+  wire [7:0]m_axis_tdata;
+  wire m_axis_tvalid;
+  reg m_axis_tready;
   localparam CLK_PERIOD = 10;
   reg [7:0] expected_data [0:10];
   integer  verification_counter;
@@ -41,34 +42,33 @@ module tb_manchester_serializer;
                           .s_axis_tready(s_axis_tready)
                         );
   manchester_decoder decoder (
-                       .clk(aclk),
-                       .rst_n(aresetn),
+                       .aclk(aclk),
+                       .aresetn(aresetn),
                        .manchester_in(serial_out),
-                       .sample_en(1'b1),
-                       .data_out(data_out),
-                       .data_valid(decoder_valid)
+                       .m_axis_tdata(m_axis_tdata),
+                       .m_axis_tvalid(m_axis_tvalid),
+                       .m_axis_tready(m_axis_tready)
                      );
-  // Clock generation: 100 MHz
   initial
     aclk = 0;
   always #(CLK_PERIOD/2) aclk = ~aclk;
   initial
     begin
-      $dumpfile("tb_manchester_serializer.vcd");   // name of the waveform file
-      $dumpvars(0, tb_manchester_serializer); // level 0 dumps all vars in module
+      $dumpfile("tb_manchester_serializer.vcd");
+      $dumpvars(0, tb_manchester_serializer);
       expected_data[0] =8'b11110000;
       expected_data[1] =8'b00001111;
       expected_data[2] =8'b10101010;
       verification_counter = 0;
+      m_axis_tready = 1;
 
 
-      // Initial values
+
       s_axis_tdata   = 0;
       s_axis_tvalid  = 0;
       aresetn        = 0;
       repeat (3) @(posedge aclk);
       aresetn = 1;
-      // Reset pulse
       send_axi_word(8'b11110000);
       send_axi_word(8'b00001111);
       send_axi_word(8'b10101010);
@@ -78,9 +78,11 @@ module tb_manchester_serializer;
     end
   always @(posedge aclk)
     begin
-      if (decoder_valid)
+      if (m_axis_tvalid === 1'b1 )
         begin
-          `ASSERT_EQ(expected_data[verification_counter], data_out, "");
+          $display("Cycle %0t: m_axis_tvalid = %b (as bits)", $time, m_axis_tvalid);
+
+          `ASSERT_EQ(expected_data[verification_counter], m_axis_tdata, "");
           verification_counter <= verification_counter + 1;
         end
     end

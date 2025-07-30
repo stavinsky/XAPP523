@@ -1,30 +1,18 @@
-IVERILOG=iverilog -I ./rtl -y ./rtl 
+IVERILOG=iverilog -I ./rtl -y ./rtl
+VVP=vvp
 
-tb: tb_manchester_encoder.vcd tb_manchester_preamble.vcd tb_manchester_escape.vcd
+TESTBENCHES = manchester_serializer manchester_preamble manchester_escape
 
-tb_manchester_encoder: rtl/*.v
-	$(IVERILOG) -o tb_manchester_encoder rtl/tb_manchester_encoder.v  rtl/manchester_serial_top.v
+tb: clean $(addsuffix .vcd, $(addprefix tb_, $(TESTBENCHES)))
 
-tb_manchester_encoder.vcd: tb_manchester_encoder
-	vvp tb_manchester_encoder
+tb_%: rtl/tb_%.v rtl/%.v
+	$(IVERILOG) -o $@ $^
 
+%.vcd: %
+	$(VVP) $<
 
-tb_manchester_preamble: rtl/*.v
-	$(IVERILOG) -o tb_manchester_preamble rtl/tb_manchester_preamble.v  rtl/manchester_preamble.v
-tb_manchester_preamble.vcd: tb_manchester_preamble
-	vvp tb_manchester_preamble
+.PHONY: clean
 
-tb_manchester_escape: rtl/*.v
-	$(IVERILOG) -o tb_manchester_escape rtl/tb_manchester_escape.v  rtl/manchester_escape.v
-
-tb_manchester_escape.vcd: tb_manchester_escape
-	vvp tb_manchester_escape
-
-.PHONY: clean 
-
-clean: 
-	rm -rf *.vcd
-	rm -rf tb_manchester_encoder
-	rm -rf tb_manchester_preamble
-	rm -rf tb_manchester_escape
+clean:
+	rm -f tb_* *.vcd
 	find . -name "._*" -exec rm {} \;
