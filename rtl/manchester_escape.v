@@ -2,7 +2,8 @@
 module manchester_escape #(
     parameter integer DATA_WIDTH = 8,
     parameter ESCAPED_SYMBOL =  8'hD5,
-    parameter ESCAPE_SYMBOL = 8'hE5
+    parameter ESCAPE_SYMBOL = 8'hE5,
+    parameter REPLACE_SYMBOL = 8'hF5
   )(
     input  wire                   aclk,
     input  wire                   aresetn,
@@ -79,7 +80,9 @@ module manchester_escape #(
                 if (m_axis_tready)
                   begin
                     m_axis_tlast_r <= local_tlast;
-                    m_axis_tdata_r <= local_data;
+                    // m_axis_tdata_r <= local_data;
+                    m_axis_tdata_r <= local_data == ESCAPED_SYMBOL ? REPLACE_SYMBOL: ESCAPE_SYMBOL;
+
                     state <= REGULAR;
                   end
               end

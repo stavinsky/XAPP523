@@ -61,7 +61,7 @@ module tb_manchester_escape;
       $dumpvars(0, tb_manchester_escape);
 
       expected_data[0] = 8'he5; // escape
-      expected_data[1] = 8'hd5; // start_word
+      expected_data[1] = 8'hf5; // start_word
       expected_data[2] = 8'h11;
       expected_data[3] = 8'h22;
       expected_data[4] = 8'h33;
@@ -99,7 +99,7 @@ module tb_manchester_escape;
             begin
               `ASSERT_EQ(1, m_axis_tlast, "tlast asertion");
             end
-          `ASSERT_EQ(expected_data[verification_counter], m_axis_tdata, "");
+          `ASSERT_EQ( m_axis_tdata, expected_data[verification_counter],"");
           verification_counter <= verification_counter + 1;
         end
     end

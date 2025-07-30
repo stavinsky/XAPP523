@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 module  manchester_decoder #(
     parameter FRAME_SIZE=64,
     parameter START_WORD =8'hD5,
@@ -20,10 +21,30 @@ module  manchester_decoder #(
   assign m_axis_tvalid = m_axis_tvalid_r;
   reg [7:0]m_axis_tdata_r;
   assign m_axis_tdata = m_axis_tdata_r;
-  reg skip;
+  reg data_clk;
   reg word_valid;
-  reg in_transaction;
   reg [8:0] word_counter;
+  always @(posedge aclk )
+    begin
+      if (!aresetn)
+        begin
+          prev_in <= 0;
+        end
+      else
+        begin
+          prev_in <= manchester_in;
+          data_clk <= 0;
+          if (prev_in ^ manchester_in && !data_clk)
+            begin
+              data_clk <= 1;
+              shift_reg <= {shift_reg[14:0], manchester_in};
+            end
+        end
+    end
+  reg [1:0] state;
+  localparam  PREAMBLE = 0;
+  localparam  TRANSACTION = 1;
+
   always @(posedge aclk)
     begin
       if (!aresetn)
@@ -31,37 +52,42 @@ module  manchester_decoder #(
           bit_count <= 0;
           shift_reg <= 0;
           word_valid <= 0;
-          in_transaction <= 0;
           word_counter <= 0;
+          state <= PREAMBLE;
         end
       else
         begin
-          prev_in <= manchester_in;
-          skip <= 0;
           word_valid <= 0;
-          if (prev_in ^ manchester_in && !skip)
-            begin
-              skip <= 1;
-              shift_reg <= {shift_reg[14:0], manchester_in};
-              bit_count <= bit_count + 1;
-              if (bit_count == 7)
-                begin
-                  word_valid <= 1;
-                  word_counter <= word_counter + 1;
-                  if (word_counter == FRAME_SIZE)
-                    begin
-                      in_transaction <= 0;
-                      word_counter <= 0;
-                    end
-                end
-              if (!in_transaction && shift_reg == {PREAMBLE_PATTERN,START_WORD})
-                begin
-                  word_valid <=0;
-                  bit_count <=1;
-                  word_counter <= 0;
-                  in_transaction <= 1;
-                end
-            end
+          case(state)
+            PREAMBLE:
+              begin
+                if (shift_reg == {PREAMBLE_PATTERN,START_WORD})
+                  begin
+                    state <= TRANSACTION;
+                    word_valid <=0;
+                    bit_count <=0;
+                    word_counter <= 0;
+                  end
+              end
+            TRANSACTION:
+              begin
+                if (data_clk)
+                  begin
+                    bit_count <= bit_count + 1;
+                    if (bit_count == 7)
+                      begin
+                        word_valid <= 1;
+                        word_counter <= word_counter + 1;
+                        if (word_counter == FRAME_SIZE)
+                          begin
+                            word_counter <= 0;
+                            state <= PREAMBLE;
+                          end
+                      end
+                  end
+              end
+          endcase
+
         end
     end
   always@(posedge aclk)
@@ -72,7 +98,7 @@ module  manchester_decoder #(
         end
       else
         begin
-          if (word_valid && in_transaction)
+          if (word_valid && state==TRANSACTION )
             begin
               m_axis_tvalid_r <= 1;
               m_axis_tdata_r <= shift_reg[7:0];
