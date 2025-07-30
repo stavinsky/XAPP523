@@ -14,7 +14,7 @@ module  manchester_decoder #(
 
 
   reg prev_in;
-  reg [7:0] shift_reg;
+  reg [15:0] shift_reg;
   reg [2:0] bit_count;
   reg m_axis_tvalid_r;
   assign m_axis_tvalid = m_axis_tvalid_r;
@@ -42,14 +42,19 @@ module  manchester_decoder #(
           if (prev_in ^ manchester_in && !skip)
             begin
               skip <= 1;
-              shift_reg <= {shift_reg[6:0], manchester_in};
+              shift_reg <= {shift_reg[14:0], manchester_in};
               bit_count <= bit_count + 1;
               if (bit_count == 7)
                 begin
                   word_valid <= 1;
                   word_counter <= word_counter + 1;
+                  if (word_counter == FRAME_SIZE)
+                    begin
+                      in_transaction <= 0;
+                      word_counter <= 0;
+                    end
                 end
-              if (!in_transaction && shift_reg == START_WORD)
+              if (!in_transaction && shift_reg == {PREAMBLE_PATTERN,START_WORD})
                 begin
                   word_valid <=0;
                   bit_count <=1;
@@ -70,7 +75,7 @@ module  manchester_decoder #(
           if (word_valid && in_transaction)
             begin
               m_axis_tvalid_r <= 1;
-              m_axis_tdata_r <= shift_reg;
+              m_axis_tdata_r <= shift_reg[7:0];
             end
           if (m_axis_tvalid_r && m_axis_tready )
             begin
