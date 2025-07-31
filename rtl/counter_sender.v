@@ -2,13 +2,15 @@
 
 module counter_sender (
     input wire clk,
-    (* MARK_DEBUG = "TRUE" *)            output wire serial_out,
+    output wire serial_out,
     output wire clk_out
   );
 
   assign clk_out = clk;
-  reg aresetn = 1;
-  wire [7:0]cnt1_m_axis_tdata;
+  wire aresetn;
+  power_on_reset por1 (.clk(clk), .reset_n(aresetn));
+
+  wire [7: 0]cnt1_m_axis_tdata;
   wire cnt1_m_axis_tvalid;
   wire cnt1_m_axis_tready;
   counter cnt1 (.clock(clk), .tready(cnt1_m_axis_tready), .tdata(cnt1_m_axis_tdata), .tvalid(cnt1_m_axis_tvalid));
@@ -17,10 +19,10 @@ module counter_sender (
 
 
 
-  (* MARK_DEBUG = "TRUE" *)          wire [7:0] framer1_m_axis_tdata;
-  (* MARK_DEBUG = "TRUE" *)          wire framer1_m_axis_tready;
-  (* MARK_DEBUG = "TRUE" *)          wire framer1_m_axis_tvalid;
-  (* MARK_DEBUG = "TRUE" *)          wire framer1_m_axis_tlast;
+  wire [7: 0] framer1_m_axis_tdata;
+  wire framer1_m_axis_tready;
+  wire framer1_m_axis_tvalid;
+  wire framer1_m_axis_tlast;
   framer #(.DATA_WIDTH(8)) framer1 (
            .clk(clk),
            .reset_n(aresetn),
@@ -34,10 +36,11 @@ module counter_sender (
            .m_axis_tlast(framer1_m_axis_tlast)
          );
 
-  (* MARK_DEBUG = "TRUE" *)      wire [7:0]escaper1_m_axis_tdata;
-  (* MARK_DEBUG = "TRUE" *)      wire escaper1_m_axis_tvalid;
-  (* MARK_DEBUG = "TRUE" *)      wire escaper1_m_axis_tready;
-  (* MARK_DEBUG = "TRUE" *)      wire escaper1_m_axis_tlast;
+  wire [7:
+        0]escaper1_m_axis_tdata;
+  wire escaper1_m_axis_tvalid;
+  wire escaper1_m_axis_tready;
+  wire escaper1_m_axis_tlast;
 
   manchester_escape escaper1 (
 
@@ -53,9 +56,10 @@ module counter_sender (
                       .m_axis_tready(escaper1_m_axis_tready),
                       .m_axis_tlast(escaper1_m_axis_tlast)
                     );
-  (* MARK_DEBUG = "TRUE" *)   wire [7:0]preamble1_m_axis_tdata;
-  (* MARK_DEBUG = "TRUE" *)  wire    preamble1_m_axis_tvalid;
-  (* MARK_DEBUG = "TRUE" *)   wire    preamble1_m_axis_tready;
+  wire [7:
+        0]preamble1_m_axis_tdata;
+  wire    preamble1_m_axis_tvalid;
+  wire    preamble1_m_axis_tready;
   manchester_preamble preamble1 (
                         .aclk(clk),
                         .aresetn(aresetn),
@@ -82,16 +86,16 @@ module counter_sender (
 
                         );
 
-  (* MARK_DEBUG = "TRUE" *)               wire [7:0]decoder1_m_axis_tdata;
-  (* MARK_DEBUG = "TRUE" *)               wire decoder1_m_axis_tvalid;
-  (* MARK_DEBUG = "TRUE" *)               wire decoder1_m_axis_tready;
+  wire [7: 0]decoder1_m_axis_tdata;
+  wire decoder1_m_axis_tvalid;
+  wire decoder1_m_axis_tready;
   manchester_decoder decoder1(
                        .aclk(clk),
                        .aresetn(aresetn),
                        .manchester_in(serial_out),
                        .m_axis_tdata(decoder1_m_axis_tdata),
                        .m_axis_tvalid(decoder1_m_axis_tvalid),
-                       .m_axis_tready(decoder1_m_axis_tready)
+                       .m_axis_tready(1)
                      );
 
 endmodule

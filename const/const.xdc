@@ -12,6 +12,7 @@
 set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports clk]
 set_property -dict {PACKAGE_PIN P20 IOSTANDARD LVCMOS33} [get_ports clk_out]
 set_property -dict {PACKAGE_PIN T20 IOSTANDARD LVCMOS33} [get_ports serial_out]
+create_clock -period 20.000 -name clk_50M [get_ports clk]
 
 
 
@@ -34,6 +35,8 @@ set_property -dict {PACKAGE_PIN T20 IOSTANDARD LVCMOS33} [get_ports serial_out]
 
 
 
+
+
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
@@ -45,65 +48,61 @@ set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
 set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
 set_property port_width 1 [get_debug_ports u_ila_0/clk]
 connect_debug_port u_ila_0/clk [get_nets [list clk_out_OBUF_BUFG]]
-set_property PROBE_TYPE DATA [get_debug_ports u_ila_0/probe0]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
 set_property port_width 8 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {framer1_m_axis_tdata[0]} {framer1_m_axis_tdata[1]} {framer1_m_axis_tdata[2]} {framer1_m_axis_tdata[3]} {framer1_m_axis_tdata[4]} {framer1_m_axis_tdata[5]} {framer1_m_axis_tdata[6]} {framer1_m_axis_tdata[7]}]]
+connect_debug_port u_ila_0/probe0 [get_nets [list {decoder1/word_counter[0]} {decoder1/word_counter[1]} {decoder1/word_counter[2]} {decoder1/word_counter[3]} {decoder1/word_counter[4]} {decoder1/word_counter[5]} {decoder1/word_counter[6]} {decoder1/word_counter[7]}]]
 create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA [get_debug_ports u_ila_0/probe1]
-set_property port_width 8 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list {decoder1_m_axis_tdata[0]} {decoder1_m_axis_tdata[1]} {decoder1_m_axis_tdata[2]} {decoder1_m_axis_tdata[3]} {decoder1_m_axis_tdata[4]} {decoder1_m_axis_tdata[5]} {decoder1_m_axis_tdata[6]} {decoder1_m_axis_tdata[7]}]]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
+set_property port_width 16 [get_debug_ports u_ila_0/probe1]
+connect_debug_port u_ila_0/probe1 [get_nets [list {decoder1/shift_reg[0]} {decoder1/shift_reg[1]} {decoder1/shift_reg[2]} {decoder1/shift_reg[3]} {decoder1/shift_reg[4]} {decoder1/shift_reg[5]} {decoder1/shift_reg[6]} {decoder1/shift_reg[7]} {decoder1/shift_reg[8]} {decoder1/shift_reg[9]} {decoder1/shift_reg[10]} {decoder1/shift_reg[11]} {decoder1/shift_reg[12]} {decoder1/shift_reg[13]} {decoder1/shift_reg[14]} {decoder1/shift_reg[15]}]]
 create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA [get_debug_ports u_ila_0/probe2]
-set_property port_width 8 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list {escaper1_m_axis_tdata[0]} {escaper1_m_axis_tdata[1]} {escaper1_m_axis_tdata[2]} {escaper1_m_axis_tdata[3]} {escaper1_m_axis_tdata[4]} {escaper1_m_axis_tdata[5]} {escaper1_m_axis_tdata[6]} {escaper1_m_axis_tdata[7]}]]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
+set_property port_width 2 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {decoder1/state[0]} {decoder1/state[1]}]]
 create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA [get_debug_ports u_ila_0/probe3]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
 set_property port_width 8 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list {preamble1_m_axis_tdata[0]} {preamble1_m_axis_tdata[1]} {preamble1_m_axis_tdata[2]} {preamble1_m_axis_tdata[3]} {preamble1_m_axis_tdata[4]} {preamble1_m_axis_tdata[5]} {preamble1_m_axis_tdata[6]} {preamble1_m_axis_tdata[7]}]]
+connect_debug_port u_ila_0/probe3 [get_nets [list {decoder1/m_axis_tdata[0]} {decoder1/m_axis_tdata[1]} {decoder1/m_axis_tdata[2]} {decoder1/m_axis_tdata[3]} {decoder1/m_axis_tdata[4]} {decoder1/m_axis_tdata[5]} {decoder1/m_axis_tdata[6]} {decoder1/m_axis_tdata[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
-set_property port_width 1 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list decoder1_m_axis_tready]]
+set_property port_width 8 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list {decoder1/m_axis_tdata_r[0]} {decoder1/m_axis_tdata_r[1]} {decoder1/m_axis_tdata_r[2]} {decoder1/m_axis_tdata_r[3]} {decoder1/m_axis_tdata_r[4]} {decoder1/m_axis_tdata_r[5]} {decoder1/m_axis_tdata_r[6]} {decoder1/m_axis_tdata_r[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
-set_property port_width 1 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list decoder1_m_axis_tvalid]]
+set_property port_width 3 [get_debug_ports u_ila_0/probe5]
+connect_debug_port u_ila_0/probe5 [get_nets [list {decoder1/bit_count[0]} {decoder1/bit_count[1]} {decoder1/bit_count[2]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 1 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list escaper1_m_axis_tlast]]
+set_property port_width 8 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list {decoder1/word[0]} {decoder1/word[1]} {decoder1/word[2]} {decoder1/word[3]} {decoder1/word[4]} {decoder1/word[5]} {decoder1/word[6]} {decoder1/word[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
 set_property port_width 1 [get_debug_ports u_ila_0/probe7]
-connect_debug_port u_ila_0/probe7 [get_nets [list escaper1_m_axis_tready]]
+connect_debug_port u_ila_0/probe7 [get_nets [list decoder1/data_clk]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
 set_property port_width 1 [get_debug_ports u_ila_0/probe8]
-connect_debug_port u_ila_0/probe8 [get_nets [list escaper1_m_axis_tvalid]]
+connect_debug_port u_ila_0/probe8 [get_nets [list decoder1/m_axis_tready]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
 set_property port_width 1 [get_debug_ports u_ila_0/probe9]
-connect_debug_port u_ila_0/probe9 [get_nets [list framer1_m_axis_tlast]]
+connect_debug_port u_ila_0/probe9 [get_nets [list decoder1/m_axis_tvalid]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe10]
 set_property port_width 1 [get_debug_ports u_ila_0/probe10]
-connect_debug_port u_ila_0/probe10 [get_nets [list framer1_m_axis_tready]]
+connect_debug_port u_ila_0/probe10 [get_nets [list decoder1/m_axis_tvalid_r]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe11]
 set_property port_width 1 [get_debug_ports u_ila_0/probe11]
-connect_debug_port u_ila_0/probe11 [get_nets [list framer1_m_axis_tvalid]]
+connect_debug_port u_ila_0/probe11 [get_nets [list decoder1/manchester_in]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe12]
 set_property port_width 1 [get_debug_ports u_ila_0/probe12]
-connect_debug_port u_ila_0/probe12 [get_nets [list preamble1_m_axis_tready]]
+connect_debug_port u_ila_0/probe12 [get_nets [list decoder1/prev_in]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe13]
 set_property port_width 1 [get_debug_ports u_ila_0/probe13]
-connect_debug_port u_ila_0/probe13 [get_nets [list preamble1_m_axis_tvalid]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe14]
-set_property port_width 1 [get_debug_ports u_ila_0/probe14]
-connect_debug_port u_ila_0/probe14 [get_nets [list serial_out_OBUF]]
+connect_debug_port u_ila_0/probe13 [get_nets [list decoder1/word_valid]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]

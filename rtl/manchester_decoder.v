@@ -8,25 +8,25 @@ module  manchester_decoder #(
   )(
     input  wire        aclk,
     input  wire        aresetn,
-    input  wire        manchester_in,
-    output wire [7:0]  m_axis_tdata,
-    output wire        m_axis_tvalid,
-    input wire     m_axis_tready
+    (* MARK_DEBUG = "TRUE" *)         input  wire        manchester_in,
+    (* MARK_DEBUG = "TRUE" *)        output wire [7:0]  m_axis_tdata,
+    (* MARK_DEBUG = "TRUE" *)        output wire        m_axis_tvalid,
+    (* MARK_DEBUG = "TRUE" *)      input wire     m_axis_tready
   );
 
 
 
-  reg prev_in;
-  reg [15:0] shift_reg;
-  reg [2:0] bit_count;
-  reg m_axis_tvalid_r;
+  (* MARK_DEBUG = "TRUE" *)      reg prev_in;
+  (* MARK_DEBUG = "TRUE" *)      reg [15:0] shift_reg;
+  (* MARK_DEBUG = "TRUE" *)      reg [2:0] bit_count;
+  (* MARK_DEBUG = "TRUE" *)      reg m_axis_tvalid_r;
   assign m_axis_tvalid = m_axis_tvalid_r;
-  reg [7:0]m_axis_tdata_r;
+  (* MARK_DEBUG = "TRUE" *)      reg [7:0]m_axis_tdata_r;
   assign m_axis_tdata = m_axis_tdata_r;
-  reg data_clk;
-  reg word_valid;
-  reg [7:0] word_counter;
-  reg [7:0] word;
+  (* MARK_DEBUG = "TRUE" *)      reg data_clk;
+  (* MARK_DEBUG = "TRUE" *)      reg word_valid;
+  (* MARK_DEBUG = "TRUE" *)      reg [7:0] word_counter;
+  (* MARK_DEBUG = "TRUE" *)      reg [7:0] word;
   always @(posedge aclk )
     begin
       if (!aresetn)
@@ -45,7 +45,7 @@ module  manchester_decoder #(
             end
         end
     end
-  reg [1:0] state;
+  (* MARK_DEBUG = "TRUE" *)     reg [1:0] state;
   localparam  PREAMBLE = 0;
   localparam  TRANSACTION = 1;
 

@@ -1,7 +1,7 @@
 IVERILOG=iverilog -I ./rtl -y ./rtl
 VVP=vvp
 
-TESTBENCHES = manchester_serializer manchester_preamble manchester_escape
+TESTBENCHES = main manchester_serializer manchester_preamble manchester_escape 
 
 tb: clean $(addsuffix .vcd, $(addprefix tb_, $(TESTBENCHES)))
 

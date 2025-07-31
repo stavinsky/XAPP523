@@ -58,6 +58,7 @@ module manchester_preamble #(
             IDLE:
               begin
                 m_axis_tvalid_r <= 0;
+                s_axis_tready_r <= 1;
                 if (s_axis_tvalid && m_axis_tready && preamble_sent == 0)
                   begin
                     state <= SEND_PREAMBLE;
