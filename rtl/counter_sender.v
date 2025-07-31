@@ -36,8 +36,7 @@ module counter_sender (
            .m_axis_tlast(framer1_m_axis_tlast)
          );
 
-  wire [7:
-        0]escaper1_m_axis_tdata;
+  wire [7: 0]escaper1_m_axis_tdata;
   wire escaper1_m_axis_tvalid;
   wire escaper1_m_axis_tready;
   wire escaper1_m_axis_tlast;
@@ -56,8 +55,7 @@ module counter_sender (
                       .m_axis_tready(escaper1_m_axis_tready),
                       .m_axis_tlast(escaper1_m_axis_tlast)
                     );
-  wire [7:
-        0]preamble1_m_axis_tdata;
+  wire [7: 0]preamble1_m_axis_tdata;
   wire    preamble1_m_axis_tvalid;
   wire    preamble1_m_axis_tready;
   manchester_preamble preamble1 (
