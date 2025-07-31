@@ -1,15 +1,19 @@
-module counter (
-    input wire clk,       // Clock input
-    input wire rst,       // Synchronous reset (active high)
-    output reg [7:0] count // 8-bit counter output
+`timescale 1ns / 1ps
+
+module counter(
+    input clock,
+    input tready,
+    output tvalid,
+    output [7:0]tdata
   );
-
-  always @(posedge clk)
+  reg [7:0]cnt;
+  assign tdata = cnt;
+  assign tvalid = 1'b1;
+  always @(posedge clock)
     begin
-      if (rst)
-        count <= 8'b0;          // Reset counter to 0
-      else
-        count <= count + 1'b1;  // Increment counter
+      if (tready)
+        begin
+          cnt <= cnt + 1'b1;
+        end
     end
-
 endmodule

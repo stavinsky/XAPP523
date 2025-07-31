@@ -2,7 +2,9 @@
 `include "assert_utils.vh"
 // verilator lint_off INITIALDLY
 module tb_manchester_serializer;
-
+  localparam   ESCAPED_SYMBOL =  8'hD5,
+               ESCAPE_SYMBOL = 8'hE5,
+               REPLACE_SYMBOL = 8'hF5;
   // Inputs
   reg aclk;
   reg aresetn;
@@ -64,7 +66,7 @@ module tb_manchester_serializer;
       expected_data[4] =8'b11110000;
       expected_data[5] =8'b00001111;
       expected_data[6] =8'b10101010;
-      expected_data[7] =8'b10101010;
+      expected_data[7] =ESCAPED_SYMBOL;
 
       verification_counter = 0;
       m_axis_tready = 1;
@@ -81,20 +83,21 @@ module tb_manchester_serializer;
       send_axi_word(8'hAA);
       send_axi_word(8'hD5);
 
-      send_axi_word(8'b11110000);
-      send_axi_word(8'b00001111);
-      send_axi_word(8'b10101010);
-      send_axi_word(8'b10101010);
+      send_axi_word(8'hF0);
+      send_axi_word(8'h0F);
+      send_axi_word(8'hAA);
+      send_axi_word(8'hAA);
 
       /// transaction 2
       send_axi_word(8'hAA);
       send_axi_word(8'hAA);
       send_axi_word(8'hD5);
 
-      send_axi_word(8'b11110000);
+      send_axi_word(8'hF0);
       send_axi_word(8'b00001111);
       send_axi_word(8'b10101010);
-      send_axi_word(8'b10101010);
+      send_axi_word(ESCAPE_SYMBOL);
+      send_axi_word(REPLACE_SYMBOL);
 
 
       repeat(50) @(posedge aclk);

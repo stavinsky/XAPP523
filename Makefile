@@ -16,3 +16,6 @@ tb_%: rtl/tb_%.v rtl/%.v
 clean:
 	rm -f tb_* *.vcd
 	find . -name "._*" -exec rm {} \;
+
+
+
