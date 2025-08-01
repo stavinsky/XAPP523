@@ -6,3 +6,12 @@ iverilog -y ./rtl -o tb_manchester_encoder rtl/tb_manchester_encoder.v  rtl/manc
 
 
 vvp tb_manchester_encoder
+
+
+
+find . -name "*.sv" -o -name "*.svh" -o -name "*.v" | sort > verible.filelist
+
+
+
+
+iverilog -I ./rtl -y ./rtl -o tb_main rtl/tb_main.v rtl/counter.v && vvp tb_main
