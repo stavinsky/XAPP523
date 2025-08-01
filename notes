@@ -15,3 +15,4 @@ find . -name "*.sv" -o -name "*.svh" -o -name "*.v" | sort > verible.filelist
 
 
 iverilog -I ./rtl -y ./rtl -o tb_main rtl/tb_main.v rtl/counter.v && vvp tb_main
+https://docs.amd.com/v/u/en-US/xapp523-lvds-4x-asynchronous-oversampling
