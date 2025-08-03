@@ -1,17 +1,11 @@
 `timescale 1ns / 1ps
 
 module counter_sender (
-    input  wire clk,
-    output wire serial_out,
-    output wire clk_out
+    input wire clk,
+    input aresetn,
+    output wire serial_out
 );
 
-  assign clk_out = clk;
-  wire aresetn;
-  power_on_reset por1 (
-      .clk(clk),
-      .reset_n(aresetn)
-  );
 
   wire [7:0] cnt1_m_axis_tdata;
   wire cnt1_m_axis_tvalid;
@@ -96,18 +90,6 @@ module counter_sender (
 
   );
 
-  wire [7:0] decoder1_m_axis_tdata;
-  wire decoder1_m_axis_tvalid;
-  wire decoder1_m_axis_tready;
-  manchester_decoder #(
-      .FRAME_SIZE(8)
-  ) decoder1 (
-      .aclk(clk),
-      .aresetn(aresetn),
-      .manchester_in(serial_out),
-      .m_axis_tdata(decoder1_m_axis_tdata),
-      .m_axis_tvalid(decoder1_m_axis_tvalid),
-      .m_axis_tready(1)
-  );
+
 
 endmodule

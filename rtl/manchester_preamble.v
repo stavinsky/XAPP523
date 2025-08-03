@@ -67,7 +67,7 @@ module manchester_preamble #(
         end
         SEND_PREAMBLE: begin
           if (m_axis_tready) begin
-            preamble_cnt <= preamble_cnt - 1;
+            preamble_cnt <= preamble_cnt - 1'b1;
             if (preamble_cnt == 1) begin
               state <= SEND_START;
               m_axis_tdata_r <= START_WORD;

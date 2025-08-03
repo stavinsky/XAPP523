@@ -1,3 +1,4 @@
+set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports clk]
 #set_property -dict {PACKAGE_PIN R4 IOSTANDARD DIFF_SSTL15} [get_ports sys_clk_p]
 #set_property -dict {PACKAGE_PIN V20 IOSTANDARD LVCMOS33} [get_ports sys_rstn]
 #set_property -dict {PACKAGE_PIN V17 IOSTANDARD LVCMOS33} [get_ports uart_txd]
@@ -9,10 +10,7 @@
 #set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 #set_property BITSTREAM.CONFIG.SPI_FALL_EDGE Yes [current_design]
 
-set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports clk]
-set_property -dict {PACKAGE_PIN P20 IOSTANDARD LVCMOS33} [get_ports clk_out]
-set_property -dict {PACKAGE_PIN T20 IOSTANDARD LVCMOS33} [get_ports serial_out]
-create_clock -period 20.000 -name clk_50M [get_ports clk]
+#create_clock -period 20.000 -name clk_50M [get_ports clk]
 
 
 
@@ -33,47 +31,33 @@ create_clock -period 20.000 -name clk_50M [get_ports clk]
 #set_property -dict {PACKAGE_PIN R18 IOSTANDARD LVCMOS33} [get_ports sd_miso]
 
 
+#set_property IOSTANDARD TMDS_33 [get_ports serial_out_diff_p]
+#set_property PACKAGE_PIN N20 [get_ports serial_out_diff_p]
+set_property PACKAGE_PIN T20 [get_ports serial_in_p]
+set_property IOSTANDARD LVDS_25 [get_ports serial_in_p]
+
+
+
+
+
+
 
 
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
 set_property C_ADV_TRIGGER false [get_debug_cores u_ila_0]
-set_property C_DATA_DEPTH 4096 [get_debug_cores u_ila_0]
+set_property C_DATA_DEPTH 1024 [get_debug_cores u_ila_0]
 set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
 set_property C_INPUT_PIPE_STAGES 0 [get_debug_cores u_ila_0]
 set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
 set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
 set_property port_width 1 [get_debug_ports u_ila_0/clk]
-connect_debug_port u_ila_0/clk [get_nets [list clk_out_OBUF_BUFG]]
+connect_debug_port u_ila_0/clk [get_nets [list pll1/inst/clk_54]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
 set_property port_width 8 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {decoder1/shift_reg_dbg[0]} {decoder1/shift_reg_dbg[1]} {decoder1/shift_reg_dbg[2]} {decoder1/shift_reg_dbg[3]} {decoder1/shift_reg_dbg[4]} {decoder1/shift_reg_dbg[5]} {decoder1/shift_reg_dbg[6]} {decoder1/shift_reg_dbg[7]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
-set_property port_width 8 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list {decoder1/word[0]} {decoder1/word[1]} {decoder1/word[2]} {decoder1/word[3]} {decoder1/word[4]} {decoder1/word[5]} {decoder1/word[6]} {decoder1/word[7]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA [get_debug_ports u_ila_0/probe2]
-set_property port_width 8 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list {decoder1/m_axis_tdata[0]} {decoder1/m_axis_tdata[1]} {decoder1/m_axis_tdata[2]} {decoder1/m_axis_tdata[3]} {decoder1/m_axis_tdata[4]} {decoder1/m_axis_tdata[5]} {decoder1/m_axis_tdata[6]} {decoder1/m_axis_tdata[7]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
-set_property port_width 2 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list {decoder1/state[0]} {decoder1/state[1]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA [get_debug_ports u_ila_0/probe4]
-set_property port_width 1 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list decoder1/m_axis_tready]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
-set_property port_width 1 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list decoder1/m_axis_tvalid]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 1 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list decoder1/manchester_in]]
+connect_debug_port u_ila_0/probe0 [get_nets [list {sample_window[0]} {sample_window[1]} {sample_window[2]} {sample_window[3]} {sample_window[4]} {sample_window[5]} {sample_window[6]} {sample_window[7]}]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets clk_out_OBUF_BUFG]
+connect_debug_port dbg_hub/clk [get_nets clk_54]

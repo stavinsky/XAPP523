@@ -6,12 +6,12 @@ module manchester_decoder #(
     parameter ESCAPE_SYMBOL = 8'hE5,
     parameter REPLACE_SYMBOL = 8'hF5
 ) (
-                              input  wire       aclk,
-                              input  wire       aresetn,
-    (* mark_debug = "true" *) input  wire       manchester_in,
-    (* mark_debug = "true" *) output wire [7:0] m_axis_tdata,
-    (* mark_debug = "true" *) output wire       m_axis_tvalid,
-    (* mark_debug = "true" *) input  wire       m_axis_tready
+    input  wire       aclk,
+    input  wire       aresetn,
+    input  wire       manchester_in,
+    output wire [7:0] m_axis_tdata,
+    output wire       m_axis_tvalid,
+    input  wire       m_axis_tready
 );
 
 
@@ -26,9 +26,7 @@ module manchester_decoder #(
   reg data_clk;
   reg word_valid;
   reg [7:0] word_counter;
-  (* mark_debug = "true" *) reg [7:0] word;
-  (* mark_debug = "true" *) wire [7:0] shift_reg_dbg;
-  assign shift_reg_dbg = shift_reg[7:0];
+  reg [7:0] word;
   always @(posedge aclk) begin
     if (!aresetn) begin
       prev_in   <= 0;
@@ -42,7 +40,7 @@ module manchester_decoder #(
       end
     end
   end
-  (* mark_debug = "true" *) reg [1:0] state;
+  reg [1:0] state;
   localparam PREAMBLE = 0;
   localparam TRANSACTION = 1;
 

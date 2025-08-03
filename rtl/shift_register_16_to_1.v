@@ -38,7 +38,7 @@ module shift_register_16_to_1 (
             begin
               bit_out   <= shift_reg[15];
               shift_reg <= {shift_reg[14:0], 1'b0};
-              bit_cnt   <= bit_cnt - 1;
+              bit_cnt   <= bit_cnt - 1'b1;
               if (bit_cnt == 2)  begin
                   // this will trigger ready on bit_cnt = 1; 
                   // client will upload data and send load on the next clock
