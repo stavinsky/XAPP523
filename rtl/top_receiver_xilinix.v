@@ -6,7 +6,9 @@
 module top_receiver_xilinix (
     input wire clk,
     input wire serial_in_p,
-    input wire serial_in_n
+    input wire serial_in_n,
+    output wire test_out_p,
+    output wire test_out_n
 );
 
 
@@ -14,19 +16,23 @@ module top_receiver_xilinix (
   wire aresetn;
   wire clk_54;
   wire clk_54_90;
-  wire clk_54_45;
-  wire clk_54_135;
   wire clk_200;
   wire clk_fb;
   wire clk_div;
+  wire clk_100;
+  wire clk_dbg;
+  wire clk_200_phase;
   clk_wiz_0 pll1 (
       .clk_in1(clk),
       .locked(aresetn),
       .clk_54(clk_54),
       .clk_54_90(clk_54_90),
       .clk_200(clk_200),
-      .clk_div(clk_div),
-          .clkfb_in(clk_fb),
+      .clk_200_phase(clk_200_phase),
+      .clk_div(clk_div), //50mhz
+      .clkfb_in(clk_fb), 
+      .clk_100(clk_100),
+      .clk_dbg(clk_dbg),//400mhz
     .clkfb_out(clk_fb)
   );
   wire clk_54_buf;
@@ -37,7 +43,7 @@ module top_receiver_xilinix (
 
   wire idelayctrl_ready;
 
-
+(* IODELAY_GROUP = "IO_DLY1" *)
   IDELAYCTRL idelayctrl_inst (
       .REFCLK(clk_200),
       .RST(!aresetn),
@@ -47,9 +53,9 @@ module top_receiver_xilinix (
     wire serial_out_n;
 
   IBUFDS_DIFF_OUT #(
-   .DIFF_TERM("FALSE"),   // Differential Termination, "TRUE"/"FALSE"
-   .IBUF_LOW_PWR("TRUE"), // Low power="TRUE", Highest performance="FALSE"
-   .IOSTANDARD("DEFAULT") // Specify the input I/O standard
+   .DIFF_TERM("TRUE"),   // Differential Termination, "TRUE"/"FALSE"
+   .IBUF_LOW_PWR("FALSE"), // Low power="TRUE", Highest performance="FALSE"
+   .IOSTANDARD("TMDS_33") // Specify the input I/O standard
 ) IBUFDS_DIFF_OUT_inst (
    .O(serial_out_p),   // Buffer diff_p output
    .OB(serial_out_n), // Buffer diff_n output
@@ -71,10 +77,15 @@ module top_receiver_xilinix (
 
 
   wire din_delayed_0;
+  (* IODELAY_GROUP = "IO_DLY1" *)
   IDELAYE2 #(
+  .HIGH_PERFORMANCE_MODE("TRUE"),
       .IDELAY_TYPE ("FIXED"),
       .IDELAY_VALUE(0),         // No delay
-      .DELAY_SRC   ("IDATAIN")
+      .DELAY_SRC   ("IDATAIN"),
+      .PIPE_SEL("FALSE"), 
+      .REFCLK_FREQUENCY(200.0),
+      .SIGNAL_PATTERN("DATA")
   ) idelay0 (
       .C      (1'b0),          // Not used in FIXED mode
       .CE     (1'b0),
@@ -83,14 +94,20 @@ module top_receiver_xilinix (
       .IDATAIN(serial_out_p),
       .DATAIN (1'b0),
       .DATAOUT(din_delayed_0)
+      
   );
   wire din_delayed_1;
+  (* IODELAY_GROUP = "IO_DLY1" *)
   IDELAYE2 #(
+    .HIGH_PERFORMANCE_MODE("TRUE"),
       .IDELAY_TYPE ("FIXED"),
-      .IDELAY_VALUE(30),         // No delay
-      .DELAY_SRC   ("IDATAIN")
+      .IDELAY_VALUE(16),       
+      .DELAY_SRC   ("IDATAIN"),
+      .PIPE_SEL("FALSE"), 
+      .REFCLK_FREQUENCY(200.0),
+      .SIGNAL_PATTERN("DATA")
   ) idelay1 (
-      .C      (1'b0),          // Not used in FIXED mode
+      .C      (1'b0),         
       .CE     (1'b0),
       .INC    (1'b0),
       .LD     (1'b0),
@@ -130,8 +147,8 @@ module top_receiver_xilinix (
          .OCLK(clk_54_90_buf),
          .OCLKB(~clk_54_90_buf),
       .BITSLIP(1'b0),
-      .CLKDIV(clk_div),
-      .CLKDIVP(1'b0),
+//      .CLKDIV(clk_div),
+
 
       // Outputs — bits captured on each edge
       .Q1(q_master_0[3]),
@@ -174,7 +191,7 @@ module top_receiver_xilinix (
          .OCLK(clk_54_90_buf),
          .OCLKB(~clk_54_90_buf),
          .BITSLIP(1'b0),
-      .CLKDIV(clk_div),
+//      .CLKDIV(clk_div),
 
          // Outputs — bits captured on each edge
          .Q1(q_master_90[3]),
@@ -189,8 +206,40 @@ module top_receiver_xilinix (
          .SHIFTOUT2()
      );
 
+
+    wire test_out = clk_200_phase;
+//    reg test_out;
+
+//    always @(posedge clk_div) begin 
+//        if (!aresetn) begin 
+//            test_out <= 0;
+//        end
+//        else begin
+//            test_out <= !test_out;
+//        end
+//    end
+
+
+    OBUFDS #(
+   .IOSTANDARD("TMDS_33"), // Specify the output I/O standard
+   .SLEW("FAST")           // Specify the output slew rate
+) OBUFDS_inst (
+   .O(test_out_p),     // Diff_p output (connect directly to top-level port)
+   .OB(test_out_n),   // Diff_n output (connect directly to top-level port)
+   .I(test_out)      // Buffer input
+);
+
+
+
+
+
+    
   // Combine to full 8-sample window
   (* MARK_DEBUG="true" *) wire [7:0] sample_window = {q_master_0, q_master_90};
+  (* MARK_DEBUG="true" *)reg [7:0]test_reg;  
+  always @(posedge clk_div) begin 
+    test_reg <= sample_window;
+  end
 
 endmodule
 
