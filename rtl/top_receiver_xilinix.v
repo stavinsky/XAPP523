@@ -230,5 +230,33 @@ module top_receiver_xilinix (
       .I (test_out)
   );
 
+
+  //  wire test_out = clk_100;
+
+  (* MARK_DEBUG="true" *) wire test_out;
+  counter_sender cnt (
+      .clk(clk_200),
+      .aresetn(aresetn),
+      .serial_out(test_out)
+  );
+
+  (* MARK_DEBUG="true" *) reg [7:0] test_shift;
+  always @(posedge clk_100) begin
+    test_shift <= {test_shift[6:0], sample_window[4]};
+  end
+
+  (* MARK_DEBUG="true" *) reg [7:0] test_100;
+  always @(posedge clk_100) begin
+    test_100 <= sample_window;
+  end
+  OBUFDS #(
+      .IOSTANDARD("TMDS_33"),
+      .SLEW("FAST")
+  ) obufds (
+      .O (test_out_p),
+      .OB(test_out_n),
+      .I (test_out)
+  );
+
 endmodule
 
