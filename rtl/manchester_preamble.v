@@ -18,7 +18,7 @@ module manchester_preamble #(
     output wire                  m_axis_tlast
 );
   // verible_lint1: waive-start parameter-name-style explicit-parameter-storage-type
-  localparam IDLE         = 2'b00,
+  localparam IDLE          = 2'b00,
              SEND_PREAMBLE = 2'b01,
              SEND_START    = 2'b10,
              SEND_DATA     = 2'b11,
@@ -37,13 +37,48 @@ module manchester_preamble #(
 
   reg holding;
   assign s_axis_tready = (!holding);
+  wire last_preamble = (preamble_cnt == 1);
 
   reg [7:0] local_tdata;
   reg local_tlast;
 
+
   always @(posedge aclk) begin
     if (!aresetn) begin
       state <= IDLE;
+    end else begin
+      case (state)
+        IDLE: begin
+          if (!holding & s_axis_tvalid) begin
+            state <= SEND_PREAMBLE;
+          end
+        end
+        SEND_PREAMBLE: begin
+          if (m_axis_tready && last_preamble) begin
+            state <= SEND_START;
+          end
+
+
+        end
+        SEND_START: begin
+          if (m_axis_tready) begin
+            state <= SEND_DATA;
+          end
+        end
+        SEND_DATA: begin
+          if (m_axis_tlast_r && m_axis_tvalid && m_axis_tready) begin
+            state <= IDLE;
+          end
+        end
+        default: begin
+          state <= IDLE;
+        end
+      endcase
+    end
+  end
+
+  always @(posedge aclk) begin
+    if (!aresetn) begin
       m_axis_tvalid_r <= 0;
       m_axis_tdata_r <= 0;
       m_axis_tlast_r <= 0;
@@ -61,15 +96,13 @@ module manchester_preamble #(
             m_axis_tdata_r <= PREAMBLE_PATTERN;
             m_axis_tvalid_r <= 1;
             m_axis_tlast_r <= 0;
-            state <= SEND_PREAMBLE;
             preamble_cnt <= PREAMBLE_TIMES;
           end
         end
         SEND_PREAMBLE: begin
           if (m_axis_tready) begin
             preamble_cnt <= preamble_cnt - 1'b1;
-            if (preamble_cnt == 1) begin
-              state <= SEND_START;
+            if (last_preamble) begin
               m_axis_tdata_r <= START_WORD;
 
             end
@@ -79,10 +112,9 @@ module manchester_preamble #(
         SEND_START: begin
 
           if (m_axis_tready) begin
-            state <= SEND_DATA;
             m_axis_tvalid_r <= 1;
-            m_axis_tdata_r <= local_tdata;
-            m_axis_tlast_r <= local_tlast;
+            m_axis_tdata_r  <= local_tdata;
+            m_axis_tlast_r  <= local_tlast;
           end
         end
         SEND_DATA: begin
@@ -95,12 +127,11 @@ module manchester_preamble #(
           if (m_axis_tvalid && m_axis_tready) begin
             holding <= 0;
             m_axis_tvalid_r <= 0;
-            if (m_axis_tlast_r) begin
-              state <= IDLE;
-            end
+
           end
         end
-
+        default: begin
+        end
       endcase
     end
   end

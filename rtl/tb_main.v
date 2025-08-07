@@ -131,7 +131,7 @@ module tb_main;
   end
   always @(posedge aclk) begin
     if (m_axis_tvalid && m_axis_tready) begin
-      `ASSERT_EQ(verification_counter, m_axis_tdata, "");
+      `ASSERT_EQ(m_axis_tdata, verification_counter, "");
       verification_counter <= verification_counter + 1;
       // $display("OUTPUT: %02X%s", m_axis_tdata, m_axis_tlast ? " [TLAST]" : "");
 
