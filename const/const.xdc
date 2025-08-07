@@ -40,6 +40,20 @@ set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets pll1/inst/clk_in1_clk_wiz_
 set_property PACKAGE_PIN N20 [get_ports test_out_p]
 set_property IOSTANDARD TMDS_33 [get_ports test_out_p]
 
+
+
+
+
+connect_debug_port dbg_hub/clk [get_nets u_ila_0_clk_dbg]
+
+connect_debug_port dbg_hub/clk [get_nets clk_dbg]
+
+connect_debug_port u_ila_0/probe3 [get_nets [list test_out]]
+
+connect_debug_port u_ila_0/probe0 [get_nets [list {test_out[0]} {test_out[1]} {test_out[2]} {test_out[3]} {test_out[4]} {test_out[5]} {test_out[6]} {test_out[7]}]]
+connect_debug_port u_ila_0/probe3 [get_nets [list test_100]]
+
+
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
@@ -53,15 +67,23 @@ set_property port_width 1 [get_debug_ports u_ila_0/clk]
 connect_debug_port u_ila_0/clk [get_nets [list pll1/inst/clk_dbg]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
 set_property port_width 8 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {test_reg[0]} {test_reg[1]} {test_reg[2]} {test_reg[3]} {test_reg[4]} {test_reg[5]} {test_reg[6]} {test_reg[7]}]]
+connect_debug_port u_ila_0/probe0 [get_nets [list {test_100[0]} {test_100[1]} {test_100[2]} {test_100[3]} {test_100[4]} {test_100[5]} {test_100[6]} {test_100[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
 set_property port_width 8 [get_debug_ports u_ila_0/probe1]
 connect_debug_port u_ila_0/probe1 [get_nets [list {sample_window[0]} {sample_window[1]} {sample_window[2]} {sample_window[3]} {sample_window[4]} {sample_window[5]} {sample_window[6]} {sample_window[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 1 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list serial_out_p]]
+set_property port_width 8 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {test_shift[0]} {test_shift[1]} {test_shift[2]} {test_shift[3]} {test_shift[4]} {test_shift[5]} {test_shift[6]} {test_shift[7]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
+set_property port_width 1 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list serial_out_p]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
+set_property port_width 1 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list test_out]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
