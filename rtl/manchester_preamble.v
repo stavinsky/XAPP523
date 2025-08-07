@@ -33,7 +33,7 @@ module manchester_preamble #(
   assign m_axis_tdata = m_axis_tdata_r;
   reg m_axis_tlast_r;
   assign m_axis_tlast = m_axis_tlast_r;
-  reg [2:0] preamble_cnt;
+  reg [1:0] preamble_cnt;
 
   reg holding;
   assign s_axis_tready = (!holding);
@@ -117,6 +117,8 @@ module manchester_preamble #(
               m_axis_tdata_r <= START_WORD;
 
             end
+          end else begin
+            preamble_cnt <= preamble_cnt;
           end
 
         end

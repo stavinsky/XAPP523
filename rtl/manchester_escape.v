@@ -78,12 +78,13 @@ module manchester_escape #(
               m_axis_tdata <= s_axis_tdata_r;
               m_axis_tlast <= s_axis_tlast_r;
             end
-          end
-
-          if (m_axis_tvalid && m_axis_tready) begin
+          end else if (m_axis_tvalid && m_axis_tready) begin
             m_axis_tvalid <= 0;
             holding       <= 0;
             s_axis_tready <= 1;
+          end else begin
+            holding <= holding;
+            s_axis_tready <= s_axis_tready;
           end
 
         end

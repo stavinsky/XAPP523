@@ -39,11 +39,11 @@ module manchester_serializer (
         holding <= 1;
         local_data_in <= s_axis_tdata;
 
-      end
-
-      if (holding && shift_ready) begin
+      end else if (holding && shift_ready) begin
         load_shift <= 1;
         holding <= 0;
+      end else begin
+        holding <= holding;
       end
 
     end
