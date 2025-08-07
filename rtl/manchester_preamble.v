@@ -51,24 +51,31 @@ module manchester_preamble #(
         IDLE: begin
           if (!holding & s_axis_tvalid) begin
             state <= SEND_PREAMBLE;
+          end else begin
+            state <= IDLE;
           end
         end
         SEND_PREAMBLE: begin
           if (m_axis_tready && last_preamble) begin
             state <= SEND_START;
+          end else begin
+            state <= SEND_PREAMBLE;
           end
 
 
         end
         SEND_START: begin
-          if (m_axis_tready) begin
-            state <= SEND_DATA;
-          end
+          state <= m_axis_tready ? SEND_DATA : state;
+          // if (m_axis_tready) begin
+          //   state <= SEND_DATA;
+          // end
+
         end
         SEND_DATA: begin
-          if (m_axis_tlast_r && m_axis_tvalid && m_axis_tready) begin
-            state <= IDLE;
-          end
+          // if (m_axis_tlast_r && m_axis_tvalid && m_axis_tready) begin
+          //   state <= IDLE;
+          // end
+          state <= (m_axis_tlast_r && m_axis_tvalid && m_axis_tready) ? IDLE : state;
         end
         default: begin
           state <= IDLE;
@@ -90,15 +97,15 @@ module manchester_preamble #(
 
       case (state)
         IDLE: begin
-          m_axis_tdata_r  <= PREAMBLE_PATTERN;
+          m_axis_tdata_r <= PREAMBLE_PATTERN;
           m_axis_tvalid_r <= 0;
+          preamble_cnt <= PREAMBLE_TIMES;
           if (!holding & s_axis_tvalid) begin
             holding <= 1;
             local_tdata <= s_axis_tdata;
             local_tlast <= s_axis_tlast;
             m_axis_tvalid_r <= 1;
             m_axis_tlast_r <= 0;
-            preamble_cnt <= PREAMBLE_TIMES;
           end
         end
         SEND_PREAMBLE: begin
@@ -123,6 +130,7 @@ module manchester_preamble #(
           end
         end
         SEND_DATA: begin
+          m_axis_tvalid_r <= m_axis_tvalid_r;
           if (!holding & s_axis_tvalid) begin
             holding <= 1;
             m_axis_tdata_r <= s_axis_tdata;
@@ -132,9 +140,12 @@ module manchester_preamble #(
             holding <= 0;
             m_axis_tvalid_r <= 0;
 
+          end else begin
+
           end
         end
         default: begin
+          state <= IDLE;
         end
       endcase
     end
