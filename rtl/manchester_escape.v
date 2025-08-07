@@ -27,13 +27,17 @@ module manchester_escape #(
   localparam [1:0] ESCAPE = 2'd1;
 
   // verilog_lint: waive-stop  explicit-parameter-storage-type
-  reg [           1:0] state;
+  reg [1:0] state;
 
-  reg                  holding;
+  reg       holding;
   // assign s_axis_tready = (!holding);
 
-  reg                  local_tlast;
-  reg [           7:0] local_tdata;
+  reg       local_tlast;
+  reg [7:0] local_tdata;
+  reg [7:0] to_replace;
+  always @(*) begin
+    to_replace = local_tdata == START_WORD ? REPLACE_SYMBOL : ESCAPE_SYMBOL;
+  end
 
 
   reg [DATA_WIDTH-1:0] s_axis_tdata_r;
@@ -59,21 +63,20 @@ module manchester_escape #(
     end else begin
       case (state)
         REGULAR: begin
+          local_tdata <= s_axis_tdata_r;
+          local_tlast <= s_axis_tlast_r;
           if (!holding && s_axis_tvalid_r) begin
             s_axis_tready <= 0;
+            holding <= 1;
+            m_axis_tvalid <= 1;
             if (s_axis_tdata_r == START_WORD || s_axis_tdata_r == ESCAPE_SYMBOL) begin
               m_axis_tdata <= ESCAPE_SYMBOL;
               m_axis_tlast <= 0;
-              m_axis_tvalid <= 1;
-              holding <= 1;
               state <= ESCAPE;
-              local_tdata <= s_axis_tdata_r;
-              local_tlast <= s_axis_tlast_r;
+
             end else begin
-              m_axis_tdata  <= s_axis_tdata_r;
-              m_axis_tlast  <= s_axis_tlast_r;
-              m_axis_tvalid <= 1;
-              holding       <= 1;
+              m_axis_tdata <= s_axis_tdata_r;
+              m_axis_tlast <= s_axis_tlast_r;
             end
           end
 
@@ -87,9 +90,12 @@ module manchester_escape #(
         ESCAPE: begin
 
           if (m_axis_tvalid && m_axis_tready) begin
-            m_axis_tdata <= local_tdata == START_WORD ? REPLACE_SYMBOL : ESCAPE_SYMBOL;
+            m_axis_tdata <= to_replace;
             m_axis_tlast <= local_tlast;
             state <= REGULAR;
+          end else begin
+            m_axis_tdata <= ESCAPE_SYMBOL;
+            m_axis_tlast <= 0;
           end
 
         end

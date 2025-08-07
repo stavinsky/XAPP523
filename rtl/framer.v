@@ -16,7 +16,7 @@ module framer #(
     output reg m_axis_tlast,
     input reset_n
 );
-  reg [18:0] counter;
+  reg [$clog2(FRAME_SIZE):0] counter;
   reg tlast_r;
   reg holding;
   assign s_axis_tready = (!holding);

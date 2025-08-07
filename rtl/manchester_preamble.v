@@ -77,6 +77,7 @@ module manchester_preamble #(
     end
   end
 
+
   always @(posedge aclk) begin
     if (!aresetn) begin
       m_axis_tvalid_r <= 0;
@@ -89,17 +90,20 @@ module manchester_preamble #(
 
       case (state)
         IDLE: begin
+          m_axis_tdata_r  <= PREAMBLE_PATTERN;
+          m_axis_tvalid_r <= 0;
           if (!holding & s_axis_tvalid) begin
             holding <= 1;
             local_tdata <= s_axis_tdata;
             local_tlast <= s_axis_tlast;
-            m_axis_tdata_r <= PREAMBLE_PATTERN;
             m_axis_tvalid_r <= 1;
             m_axis_tlast_r <= 0;
             preamble_cnt <= PREAMBLE_TIMES;
           end
         end
         SEND_PREAMBLE: begin
+          m_axis_tdata_r  <= PREAMBLE_PATTERN;
+          m_axis_tvalid_r <= 1;
           if (m_axis_tready) begin
             preamble_cnt <= preamble_cnt - 1'b1;
             if (last_preamble) begin
@@ -111,10 +115,11 @@ module manchester_preamble #(
         end
         SEND_START: begin
 
+          m_axis_tdata_r  <= START_WORD;
+          m_axis_tvalid_r <= 1;
           if (m_axis_tready) begin
-            m_axis_tvalid_r <= 1;
-            m_axis_tdata_r  <= local_tdata;
-            m_axis_tlast_r  <= local_tlast;
+            m_axis_tdata_r <= local_tdata;
+            m_axis_tlast_r <= local_tlast;
           end
         end
         SEND_DATA: begin
@@ -123,8 +128,7 @@ module manchester_preamble #(
             m_axis_tdata_r <= s_axis_tdata;
             m_axis_tlast_r <= s_axis_tlast;
             m_axis_tvalid_r <= 1;
-          end
-          if (m_axis_tvalid && m_axis_tready) begin
+          end else if (m_axis_tvalid && m_axis_tready) begin
             holding <= 0;
             m_axis_tvalid_r <= 0;
 
