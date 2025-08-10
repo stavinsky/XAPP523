@@ -112,8 +112,8 @@ module top_receiver_xilinix (
       .DATAOUT(din_delayed_1)
   );
 
-  wire [3:0] q_master_0;
-  wire [3:0] q_master_90;
+  wire [4:0] q_master;
+  wire [4:0] q_slave;
 
   // === ISERDES for 0° delay path ===
   ISERDESE2 #(
@@ -147,10 +147,10 @@ module top_receiver_xilinix (
       //      .CLKDIVP(1'b0),
 
       // Outputs — bits captured on each edge
-      .Q1(q_master_0[3]),
-      .Q2(q_master_0[2]),
-      .Q3(q_master_0[1]),
-      .Q4(q_master_0[0]),
+      .Q1(q_master[1]),
+      .Q2(q_master[2]),
+      .Q3(q_master[3]),
+      .Q4(q_master[4]),
 
       // Not used in this config
 
@@ -190,10 +190,10 @@ module top_receiver_xilinix (
       //      .CLKDIV(clk_div),
 
       // Outputs — bits captured on each edge
-      .Q1(q_master_90[3]),
-      .Q2(q_master_90[2]),
-      .Q3(q_master_90[1]),
-      .Q4(q_master_90[0]),
+      .Q1(q_slave[1]),
+      .Q2(q_slave[2]),
+      .Q3(q_slave[3]),
+      .Q4(q_slave[4]),
 
 
       .SHIFTIN1 (1'b0),
@@ -203,31 +203,27 @@ module top_receiver_xilinix (
   );
 
   //  // Combine to full 8-sample window
-  (* MARK_DEBUG="true" *) wire [7:0] sample_window = {q_master_0, ~q_master_90};
+  (* MARK_DEBUG="true" *) wire [7:0] sample_window = {q_master[4], q_slave[4], q_master[2], q_slave[2], q_master[3], q_slave[3], q_master[1], q_slave[1] } ;
   
   
-  reg [7:0] sw_r;
+  reg [7:0] sw;
   always @(posedge clk_100) begin
-    sw_r <= sample_window;              
+    sw <= sample_window;              
   end
-  reg q0_prev;
+  reg q7_prev;
   always @(posedge clk_100) begin
-    q0_prev <= sw_r[0];
+    q7_prev <= sw[7];
   end
   
   (* MARK_DEBUG="true" *)reg [3:0] E;
-  always @(posedge clk_100) begin
-//    E[0] <= ( sw_r[7] ^ sw_r[3] ) | ( sw_r[5] ^ sw_r[1] );
-//    E[1] <= ( sw_r[6] ^ sw_r[3] ) | ( sw_r[4] ^ sw_r[1] );
-//    E[2] <= ( sw_r[5] ^ sw_r[2] ) | ( sw_r[4] ^ sw_r[0] );
-//    E[3] <= ( sw_r[7] ^ q0_prev ) | ( sw_r[5] ^ sw_r[2] );
 
-E[0] <= (sw_r[7] ^ sw_r[3]) | (sw_r[6] ^ sw_r[2]); // (Q1M1 ^ ~Q1S1) | (Q2M1 ^ ~Q2S1)
-E[1] <= (sw_r[5] ^ sw_r[3]) | (sw_r[4] ^ sw_r[2]); // (Q3M1 ^ ~Q1S1) | (Q4M1 ^ ~Q2S1)
-E[2] <= (sw_r[6] ^ sw_r[1]) | (sw_r[4] ^ sw_r[0]); // (Q2M1 ^ ~Q3S1) | (Q4M1 ^ ~Q4S1)
-E[3] <= (sw_r[7] ^ q0_prev) | (sw_r[6] ^ sw_r[1]); // (Q1M1 ^ ~Q4S0) | (Q2M1 ^ ~Q3S1)
+//  end
+  always @(*) begin 
+    E[0] = (sw[1] ^ ~sw[0]) | (sw[5] ^ ~sw[4]);
+    E[1] = (sw[1] ^ ~sw[2]) | (sw[5] ^ ~sw[6]);
+    E[2] = (sw[2] ^ ~sw[3]) | (sw[7] ^ ~sw[6]);
+    E[3] = (sw[4] ^ ~sw[3]) | (sw[0] ^ ~q7_prev);
   end
-  
 
 
 //  (* MARK_DEBUG="true" *)wire test_out;
