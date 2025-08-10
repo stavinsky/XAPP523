@@ -7,8 +7,9 @@ module top_receiver_xilinix (
     input  wire clk,
     input  wire serial_in_p,
     input  wire serial_in_n,
-    output wire test_out_p,
-    output wire test_out_n
+    output wire test_out
+//    output wire test_out_p,
+//    output wire test_out_n
 );
 
 
@@ -21,7 +22,8 @@ module top_receiver_xilinix (
   wire clk_div;
   wire clk_dbg;
   wire clk_100;
-  clk_wiz_0 pll1 (
+  wire clk_serial_out;
+  clk_wiz_0_1 pll1 (
       .clk_in1(clk),
       .locked(aresetn),
       .clk_0(clk_54),
@@ -31,7 +33,8 @@ module top_receiver_xilinix (
       .clk_dbg(clk_dbg),
       .clkfb_in(clk_fb),
       .clkfb_out(clk_fb),
-      .clk_100(clk_100)
+      .clk_100(clk_100),
+      .serial_out_clk(clk_serial_out)
   );
   wire clk_54_buf;
   wire clk_54_90_buf;
@@ -53,11 +56,11 @@ module top_receiver_xilinix (
       .RST(!aresetn),
       .RDY(idelayctrl_ready)
   );
-  (* MARK_DEBUG="true" *)wire serial_out_p;
+  wire serial_out_p;
   wire serial_out_n;
 
   IBUFDS_DIFF_OUT #(
-      .DIFF_TERM("TRUE"),  // Differential Termination, "TRUE"/"FALSE"
+      .DIFF_TERM("FALSE"),  // Differential Termination, "TRUE"/"FALSE"
       .IBUF_LOW_PWR("FALSE"),  // Low power="TRUE", Highest performance="FALSE"
       .IOSTANDARD("TMDS_33")  // Specify the input I/O standard
   ) IBUFDS_DIFF_OUT_inst (
@@ -83,7 +86,7 @@ module top_receiver_xilinix (
   wire din_delayed_0;
   IDELAYE2 #(
       .IDELAY_TYPE ("FIXED"),
-      .IDELAY_VALUE(0),         // No delay
+      .IDELAY_VALUE(1),         // No delay
       .DELAY_SRC   ("IDATAIN")
   ) idelay0 (
       .C      (1'b0),          // Not used in FIXED mode
@@ -97,7 +100,7 @@ module top_receiver_xilinix (
   wire din_delayed_1;
   IDELAYE2 #(
       .IDELAY_TYPE ("FIXED"),
-      .IDELAY_VALUE(16),         // No delay
+      .IDELAY_VALUE(18),         // No delay
       .DELAY_SRC   ("IDATAIN")
   ) idelay1 (
       .C      (1'b0),          // Not used in FIXED mode
@@ -119,7 +122,7 @@ module top_receiver_xilinix (
       .DATA_WIDTH(4),
       .DATA_RATE("DDR"),
       .OFB_USED("FALSE"),
-      .IOBDELAY("NONE"),
+      .IOBDELAY("IFD"),
       .NUM_CE(1),
       .DYN_CLKDIV_INV_EN("FALSE"),
       .DYN_CLK_INV_EN("FALSE"),
@@ -201,62 +204,78 @@ module top_receiver_xilinix (
 
   //  // Combine to full 8-sample window
   (* MARK_DEBUG="true" *) wire [7:0] sample_window = {q_master_0, ~q_master_90};
+  
+  
+  reg [7:0] sw_r;
+  always @(posedge clk_100) begin
+    sw_r <= sample_window;              
+  end
+  reg q0_prev;
+  always @(posedge clk_100) begin
+    q0_prev <= sw_r[0];
+  end
+  
+  (* MARK_DEBUG="true" *)reg [3:0] E;
+  always @(posedge clk_100) begin
+//    E[0] <= ( sw_r[7] ^ sw_r[3] ) | ( sw_r[5] ^ sw_r[1] );
+//    E[1] <= ( sw_r[6] ^ sw_r[3] ) | ( sw_r[4] ^ sw_r[1] );
+//    E[2] <= ( sw_r[5] ^ sw_r[2] ) | ( sw_r[4] ^ sw_r[0] );
+//    E[3] <= ( sw_r[7] ^ q0_prev ) | ( sw_r[5] ^ sw_r[2] );
+
+E[0] <= (sw_r[7] ^ sw_r[3]) | (sw_r[6] ^ sw_r[2]); // (Q1M1 ^ ~Q1S1) | (Q2M1 ^ ~Q2S1)
+E[1] <= (sw_r[5] ^ sw_r[3]) | (sw_r[4] ^ sw_r[2]); // (Q3M1 ^ ~Q1S1) | (Q4M1 ^ ~Q2S1)
+E[2] <= (sw_r[6] ^ sw_r[1]) | (sw_r[4] ^ sw_r[0]); // (Q2M1 ^ ~Q3S1) | (Q4M1 ^ ~Q4S1)
+E[3] <= (sw_r[7] ^ q0_prev) | (sw_r[6] ^ sw_r[1]); // (Q1M1 ^ ~Q4S0) | (Q2M1 ^ ~Q3S1)
+  end
+  
 
 
-  //  wire test_out = clk_100;
+//  (* MARK_DEBUG="true" *)wire test_out;
 
-  (* MARK_DEBUG="true" *) wire test_out;
-  counter_sender cnt (
-      .clk(clk_dbg),
-      .aresetn(aresetn),
-      .serial_out(test_out)
-  );
+
+//reg [4:0] cnt;
+//reg [31:0] data;
+//reg data_bit;
+//assign test_out = clk_serial_out ^ data_bit;
+assign test_out = clk_serial_out;
+// always @(posedge clk_serial_out) begin 
+//    if(!aresetn) begin 
+//        cnt <= 0;
+//        data <= 32'hAA550FF0;
+//        data_bit <= 0;
+//    end
+//    else begin 
+//        data_bit <= data[cnt];
+//        cnt <= cnt+1'b1;
+//    end
+//end
+
+
+//  (* MARK_DEBUG="true" *) wire test_out;
+//  counter_sender cnt (
+//      .clk(clk_dbg),
+//      .aresetn(aresetn),
+//      .serial_out(test_out)
+//  );
 
   (* MARK_DEBUG="true" *) reg [7:0] test_shift;
   always @(posedge clk_100) begin
-    test_shift <= {test_shift[6:0], sample_window[4]};
+    test_shift <= {test_shift[5:0], sample_window[3],sample_window[2]};
   end
 
   (* MARK_DEBUG="true" *) reg [7:0] test_100;
   always @(posedge clk_100) begin
     test_100 <= sample_window;
   end
-  OBUFDS #(
-      .IOSTANDARD("TMDS_33"),
-      .SLEW("FAST")
-  ) obufds (
-      .O (test_out_p),
-      .OB(test_out_n),
-      .I (test_out)
-  );
+//  OBUFDS #(
+//      .IOSTANDARD("TMDS_33"),
+//      .SLEW("FAST")
+//  ) obufds (
+//      .O (test_out_p),
+//      .OB(test_out_n),
+//      .I (test_out)
+//  );
 
-
-  //  wire test_out = clk_100;
-
-  (* MARK_DEBUG="true" *) wire test_out;
-  counter_sender cnt (
-      .clk(clk_200),
-      .aresetn(aresetn),
-      .serial_out(test_out)
-  );
-
-  (* MARK_DEBUG="true" *) reg [7:0] test_shift;
-  always @(posedge clk_100) begin
-    test_shift <= {test_shift[6:0], sample_window[4]};
-  end
-
-  (* MARK_DEBUG="true" *) reg [7:0] test_100;
-  always @(posedge clk_100) begin
-    test_100 <= sample_window;
-  end
-  OBUFDS #(
-      .IOSTANDARD("TMDS_33"),
-      .SLEW("FAST")
-  ) obufds (
-      .O (test_out_p),
-      .OB(test_out_n),
-      .I (test_out)
-  );
 
 endmodule
 

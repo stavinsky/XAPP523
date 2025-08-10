@@ -1,3 +1,5 @@
 manchester
 ._*
 .Xil
+/vivado*
+/*.vcd

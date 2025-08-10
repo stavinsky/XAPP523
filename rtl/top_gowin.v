@@ -1,7 +1,7 @@
 module top_gowin (
     input             sys_clk,            // clk input
     input             sys_rst_n,          // reset input
-    output reg  [5:0] led,                // 6 LEDS pin
+//    output reg  [5:0] led,                // 6 LEDS pin
     output wire       serial_out_diff_p,
     output wire       serial_out_diff_n,
     output wire test_clk
@@ -69,32 +69,45 @@ wire in_clk;
   //       .clk(clk),
   //       .reset_n(aresetn)
   //   );
-  manchester_sender cnt_send (
-      .aclk(clk108),
-      .serial_out(serial_out),
-      .aresetn(aresetn)
-  );
+//  manchester_sender cnt_send (
+//      .aclk(clk108),
+//      .serial_out(serial_out),
+//      .aresetn(aresetn)
+//  );
+
+reg [4:0] cnt;
+reg [31:0] data;
+reg data_bit;
+assign serial_out = clk108 ^ data_bit;
+ always @(posedge clk108) begin 
+    if(!aresetn) begin 
+        cnt <= 0;
+        data <= 32'hAA550FF0;
+        data_bit <= 0;
+    end
+    else begin 
+        data_bit <= data[cnt];
+        cnt <= cnt+1'b1;
+    end
+end
 
 
+  // LED example
+//  reg [23:0] counter;
 
+//  always @(posedge sys_clk or negedge aresetn) begin
+//    if (!aresetn) counter <= 24'd0;
+//    else if (counter < 24'd1349_9999)  // 0.5s delay
+//      counter <= counter + 1'd1;
+//    else counter <= 24'd0;
+//  end
 
-
-  //// LED example
-  reg [23:0] counter;
-
-  always @(posedge sys_clk or negedge aresetn) begin
-    if (!aresetn) counter <= 24'd0;
-    else if (counter < 24'd1349_9999)  // 0.5s delay
-      counter <= counter + 1'd1;
-    else counter <= 24'd0;
-  end
-
-  always @(posedge sys_clk or negedge aresetn) begin
-    if (!aresetn) led <= 6'b111110;
-    else if (counter == 24'd1349_9999)  // 0.5s delay
-      led[5:0] <= {led[4:0], led[5]};
-    else led <= led;
-  end
+//  always @(posedge sys_clk or negedge aresetn) begin
+//    if (!aresetn) led <= 6'b111110;
+//    else if (counter == 24'd1349_9999)  // 0.5s delay
+//      led[5:0] <= {led[4:0], led[5]};
+//    else led <= led;
+//  end
 
 
 
