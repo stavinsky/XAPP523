@@ -56,25 +56,16 @@ module top_receiver_xilinix (
   );
 
   wire [7:0] sw;
+  (* MARK_DEBUG="true" *)wire [1:0] out;
   (* MARK_DEBUG="true" *)wire [3:0] E;
   data_recovery_unit dru (
       .sample_window(sample_window),
       .clk(clk_100),
       .sw(sw),
-      .E(E)
+      .E(E),
+      .aresetn(aresetn),
+      .out(out)
   );
-
-
-
   assign test_out = clk_serial_out;
-
-
-
-  (* MARK_DEBUG="true" *) reg [7:0] test_shift;
-  always @(posedge clk_100) begin
-    test_shift <= {test_shift[6:0], sample_window[4]};
-  end
-
-
 endmodule
 
