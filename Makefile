@@ -20,6 +20,7 @@ clean:
 	rm -f tb_* *.vcd
 	find . -name "._*" -exec rm {} \;
 	rm -rf vivado.*
+	rm -rf vivado*
 
 
 

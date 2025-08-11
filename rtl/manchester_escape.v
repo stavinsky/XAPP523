@@ -35,9 +35,12 @@ module manchester_escape #(
   reg       local_tlast;
   reg [7:0] local_tdata;
   reg [7:0] to_replace;
+  // verilog_lint: waive-start always-comb
+
   always @(*) begin
     to_replace = local_tdata == START_WORD ? REPLACE_SYMBOL : ESCAPE_SYMBOL;
   end
+  // verilog_lint: waive-stop always-comb
 
 
   reg [DATA_WIDTH-1:0] s_axis_tdata_r;

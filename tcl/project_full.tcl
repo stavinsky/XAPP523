@@ -52,24 +52,24 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
- "[file normalize "$origin_dir/../rtl/counter.v"]"\
- "[file normalize "$origin_dir/../rtl/counter_sender.v"]"\
- "[file normalize "$origin_dir/../rtl/framer.v"]"\
- "[file normalize "$origin_dir/../rtl/manchester_decoder.v"]"\
- "[file normalize "$origin_dir/../rtl/manchester_encoder.v"]"\
- "[file normalize "$origin_dir/../rtl/manchester_escape.v"]"\
- "[file normalize "$origin_dir/../rtl/manchester_preamble.v"]"\
- "[file normalize "$origin_dir/../rtl/manchester_serializer.v"]"\
- "[file normalize "$origin_dir/../rtl/power_on_reset.v"]"\
- "[file normalize "$origin_dir/../rtl/shift_register_16_to_1.v"]"\
- "[file normalize "$origin_dir/../rtl/assert_utils.vh"]"\
- "[file normalize "$origin_dir/../rtl/tb_manchester_escape.v"]"\
- "[file normalize "$origin_dir/../rtl/tb_manchester_preamble.v"]"\
- "[file normalize "$origin_dir/../rtl/tb_manchester_serializer.v"]"\
- "[file normalize "$origin_dir/../rtl/top.v"]"\
- "[file normalize "$origin_dir/../rtl/top_receiver_xilinix.v"]"\
- "[file normalize "$origin_dir/../ip/clk_wiz_0_1/clk_wiz_0_1.xci"]"\
- "[file normalize "$origin_dir/../const/const.xdc"]"\
+ "[file normalize "$origin_dir/rtl/counter.v"]"\
+ "[file normalize "$origin_dir/rtl/counter_sender.v"]"\
+ "[file normalize "$origin_dir/rtl/framer.v"]"\
+ "[file normalize "$origin_dir/rtl/manchester_decoder.v"]"\
+ "[file normalize "$origin_dir/rtl/manchester_encoder.v"]"\
+ "[file normalize "$origin_dir/rtl/manchester_escape.v"]"\
+ "[file normalize "$origin_dir/rtl/manchester_preamble.v"]"\
+ "[file normalize "$origin_dir/rtl/manchester_serializer.v"]"\
+ "[file normalize "$origin_dir/rtl/power_on_reset.v"]"\
+ "[file normalize "$origin_dir/rtl/shift_register_16_to_1.v"]"\
+ "[file normalize "$origin_dir/rtl/assert_utils.vh"]"\
+ "[file normalize "$origin_dir/rtl/tb_manchester_escape.v"]"\
+ "[file normalize "$origin_dir/rtl/tb_manchester_preamble.v"]"\
+ "[file normalize "$origin_dir/rtl/tb_manchester_serializer.v"]"\
+ "[file normalize "$origin_dir/rtl/top.v"]"\
+ "[file normalize "$origin_dir/rtl/top_receiver_xilinix.v"]"\
+ "[file normalize "$origin_dir/ip/clk_wiz_0_1/clk_wiz_0_1.xci"]"\
+ "[file normalize "$origin_dir/const/const.xdc"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -145,7 +145,7 @@ if { $::argc > 0 } {
 }
 
 # Set the directory path for the original project from where this script was exported
-set orig_proj_dir "[file normalize "$origin_dir/../manchester/manchester"]"
+set orig_proj_dir "[file normalize "$origin_dir/manchester/manchester"]"
 
 # Check for paths and files needed for project creation
 set validate_required 0
@@ -200,53 +200,53 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/../rtl/counter.v"] \
- [file normalize "${origin_dir}/../rtl/counter_sender.v"] \
- [file normalize "${origin_dir}/../rtl/framer.v"] \
- [file normalize "${origin_dir}/../rtl/manchester_decoder.v"] \
- [file normalize "${origin_dir}/../rtl/manchester_encoder.v"] \
- [file normalize "${origin_dir}/../rtl/manchester_escape.v"] \
- [file normalize "${origin_dir}/../rtl/manchester_preamble.v"] \
- [file normalize "${origin_dir}/../rtl/manchester_serializer.v"] \
- [file normalize "${origin_dir}/../rtl/power_on_reset.v"] \
- [file normalize "${origin_dir}/../rtl/shift_register_16_to_1.v"] \
- [file normalize "${origin_dir}/../rtl/assert_utils.vh"] \
- [file normalize "${origin_dir}/../rtl/tb_manchester_escape.v"] \
- [file normalize "${origin_dir}/../rtl/tb_manchester_preamble.v"] \
- [file normalize "${origin_dir}/../rtl/tb_manchester_serializer.v"] \
- [file normalize "${origin_dir}/../rtl/top.v"] \
- [file normalize "${origin_dir}/../rtl/top_receiver_xilinix.v"] \
+ [file normalize "${origin_dir}/rtl/counter.v"] \
+ [file normalize "${origin_dir}/rtl/counter_sender.v"] \
+ [file normalize "${origin_dir}/rtl/framer.v"] \
+ [file normalize "${origin_dir}/rtl/manchester_decoder.v"] \
+ [file normalize "${origin_dir}/rtl/manchester_encoder.v"] \
+ [file normalize "${origin_dir}/rtl/manchester_escape.v"] \
+ [file normalize "${origin_dir}/rtl/manchester_preamble.v"] \
+ [file normalize "${origin_dir}/rtl/manchester_serializer.v"] \
+ [file normalize "${origin_dir}/rtl/power_on_reset.v"] \
+ [file normalize "${origin_dir}/rtl/shift_register_16_to_1.v"] \
+ [file normalize "${origin_dir}/rtl/assert_utils.vh"] \
+ [file normalize "${origin_dir}/rtl/tb_manchester_escape.v"] \
+ [file normalize "${origin_dir}/rtl/tb_manchester_preamble.v"] \
+ [file normalize "${origin_dir}/rtl/tb_manchester_serializer.v"] \
+ [file normalize "${origin_dir}/rtl/top.v"] \
+ [file normalize "${origin_dir}/rtl/top_receiver_xilinix.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../rtl/assert_utils.vh"
+set file "$origin_dir/rtl/assert_utils.vh"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Verilog Header" -objects $file_obj
 
-set file "$origin_dir/../rtl/tb_manchester_escape.v"
+set file "$origin_dir/rtl/tb_manchester_escape.v"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "used_in" -value "simulation" -objects $file_obj
 set_property -name "used_in_implementation" -value "0" -objects $file_obj
 set_property -name "used_in_synthesis" -value "0" -objects $file_obj
 
-set file "$origin_dir/../rtl/tb_manchester_preamble.v"
+set file "$origin_dir/rtl/tb_manchester_preamble.v"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "used_in" -value "simulation" -objects $file_obj
 set_property -name "used_in_implementation" -value "0" -objects $file_obj
 set_property -name "used_in_synthesis" -value "0" -objects $file_obj
 
-set file "$origin_dir/../rtl/tb_manchester_serializer.v"
+set file "$origin_dir/rtl/tb_manchester_serializer.v"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "used_in" -value "simulation" -objects $file_obj
 set_property -name "used_in_implementation" -value "0" -objects $file_obj
 set_property -name "used_in_synthesis" -value "0" -objects $file_obj
 
-set file "$origin_dir/../rtl/top.v"
+set file "$origin_dir/rtl/top.v"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "is_enabled" -value "0" -objects $file_obj
@@ -264,12 +264,12 @@ set_property -name "top_auto_set" -value "0" -objects $obj
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/../ip/clk_wiz_0_1/clk_wiz_0_1.xci"] \
+ [file normalize "${origin_dir}/ip/clk_wiz_0_1/clk_wiz_0_1.xci"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../ip/clk_wiz_0_1/clk_wiz_0_1.xci"
+set file "$origin_dir/ip/clk_wiz_0_1/clk_wiz_0_1.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
@@ -291,18 +291,18 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set obj [get_filesets constrs_1]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/../const/const.xdc"]"
+set file "[file normalize "$origin_dir/const/const.xdc"]"
 set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$origin_dir/../const/const.xdc"
+set file "$origin_dir/const/const.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
-set_property -name "target_constrs_file" -value "[file normalize "$origin_dir/../const/const.xdc"]" -objects $obj
+set_property -name "target_constrs_file" -value "[file normalize "$origin_dir/const/const.xdc"]" -objects $obj
 set_property -name "target_part" -value "xc7z010clg400-2" -objects $obj
-set_property -name "target_ucf" -value "[file normalize "$origin_dir/../const/const.xdc"]" -objects $obj
+set_property -name "target_ucf" -value "[file normalize "$origin_dir/const/const.xdc"]" -objects $obj
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
