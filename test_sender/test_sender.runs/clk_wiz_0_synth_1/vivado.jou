@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2024.2.2 (64-bit)
+# SW Build 6060944 on Thu Mar 06 19:10:09 MST 2025
+# IP Build 6050500 on Thu Mar  6 23:33:39 MST 2025
+# SharedData Build 6060542 on Thu Mar 06 10:31:07 MST 2025
+# Start of session at: Tue Aug 12 22:54:48 2025
+# Process ID         : 491370
+# Current directory  : /home/dev/dev/fpga/projects/manchester/test_sender/test_sender.runs/clk_wiz_0_synth_1
+# Command line       : vivado -log clk_wiz_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source clk_wiz_0.tcl
+# Log file           : /home/dev/dev/fpga/projects/manchester/test_sender/test_sender.runs/clk_wiz_0_synth_1/clk_wiz_0.vds
+# Journal file       : /home/dev/dev/fpga/projects/manchester/test_sender/test_sender.runs/clk_wiz_0_synth_1/vivado.jou
+# Running On         : dev-AI-Series
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 24.04.3 LTS
+# Processor Detail   : AMD Ryzen AI 9 HX 370 w/ Radeon 890M
+# CPU Frequency      : 4367.456 MHz
+# CPU Physical cores : 12
+# CPU Logical cores  : 24
+# Host memory        : 98724 MB
+# Swap memory        : 8589 MB
+# Total Virtual      : 107314 MB
+# Available Virtual  : 79523 MB
+#-----------------------------------------------------------
+source clk_wiz_0.tcl -notrace

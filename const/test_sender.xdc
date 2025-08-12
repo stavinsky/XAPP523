@@ -1,0 +1,5 @@
+set_property PACKAGE_PIN M19 [get_ports clk]
+set_property IOSTANDARD LVCMOS33 [get_ports clk]
+set_property IOSTANDARD LVCMOS33 [get_ports serial_out]
+set_property SLEW FAST [get_ports serial_out]
+set_property PACKAGE_PIN H19 [get_ports serial_out]
