@@ -35,17 +35,21 @@ module data_recovery_unit (
   end
   // verilog_lint: waive-stop always-comb
 
-  (* MARK_DEBUG="true" *) reg [1:0] state;
+  (* MARK_DEBUG="true" *)reg [1:0] state;
+  reg [1:0] num_bits;
   always @(posedge clk) begin
     if (!aresetn) begin
-      state <= 2'b01;
+      num_bits <= 2;
+      state <= 2'b00;
     end else begin
+      num_bits <= 2;
       case (state)
         2'b00: begin
           if (E[3]) begin
             state <= 2'b01;
           end else if (E[0]) begin
             state <= 2'b10;
+            num_bits <= 3;
           end else begin
             state <= 2'b00;
           end
@@ -80,20 +84,21 @@ module data_recovery_unit (
       endcase
     end
   end
-  always @(*) begin
-    out = 2'b00;
+  always @(posedge clk) begin
+    out <= 2'b00;
+
     case (state)
       2'b00: begin
-        out = {sw[0], sw[4]};
+        out <= {sw[0], sw[4]};
       end
       2'b01: begin
-        out = {~sw[1], ~sw[5]};
+        out <= {~sw[1], ~sw[5]};
       end
       2'b10: begin
-        out = {sw[2], sw[6]};
+        out <= {sw[2], sw[6]};
       end
       2'b11: begin
-        out = {~sw[3], ~sw[7]};
+        out <= {~sw[3], ~sw[7]};
       end
     endcase
   end

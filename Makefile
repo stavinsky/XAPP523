@@ -4,7 +4,7 @@ VVP=vvp
 ALL_V_FILES := $(wildcard rtl/*.v)
 RTL_V_FILES := $(filter-out rtl/tb_%.v, $(ALL_V_FILES))
 
-TESTBENCHES = main manchester_serializer manchester_preamble manchester_escape 
+TESTBENCHES = main manchester_serializer manchester_preamble manchester_escape data_recovery_unit
 
 tb: clean $(addsuffix .vcd, $(addprefix tb_, $(TESTBENCHES)))
 
