@@ -56,7 +56,7 @@ module top_receiver_xilinix (
   );
 
   wire [7:0] sw;
-  (* MARK_DEBUG="true" *)wire [1:0] out;
+  (* MARK_DEBUG="true" *)wire [2:0] out;
   (* MARK_DEBUG="true" *)wire [3:0] E;
   data_recovery_unit dru (
       .sample_window(sample_window),

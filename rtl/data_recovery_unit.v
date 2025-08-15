@@ -3,7 +3,7 @@ module data_recovery_unit (
     input wire clk,
     output reg [7:0] sw,
     output reg [3:0] E,
-    output reg [1:0] out,
+    output reg [2:0] out,
 
     input wire aresetn
 );
@@ -36,11 +36,11 @@ module data_recovery_unit (
   // verilog_lint: waive-stop always-comb
 
   (* MARK_DEBUG="true" *)reg [1:0] state;
-  reg [1:0] num_bits;
+  (* MARK_DEBUG="true" *)reg [1:0] num_bits;
   always @(posedge clk) begin
     if (!aresetn) begin
-      num_bits <= 2;
       state <= 2'b00;
+      num_bits <= 2;
     end else begin
       num_bits <= 2;
       case (state)
@@ -85,20 +85,20 @@ module data_recovery_unit (
     end
   end
   always @(posedge clk) begin
-    out <= 2'b00;
-
+    out <= 3'b000;
     case (state)
       2'b00: begin
-        out <= {sw[0], sw[4]};
+        out <= {~sw[7], sw[0], sw[4]};
       end
       2'b01: begin
-        out <= {~sw[1], ~sw[5]};
+        out <= {~sw[7], ~sw[1], ~sw[5]};
       end
       2'b10: begin
-        out <= {sw[2], sw[6]};
+
+        out <= {~sw[7], sw[2], sw[6]};
       end
       2'b11: begin
-        out <= {~sw[3], ~sw[7]};
+        out <= {~sw[7], ~sw[3], ~sw[7]};
       end
     endcase
   end
