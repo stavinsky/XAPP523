@@ -26,7 +26,6 @@ module tb_data_recovery_unit ();
       .sample_window(sample_window)
 
   );
-
   initial begin
     $dumpfile("tb_data_recovery_unit.vcd");
     $dumpvars(0, tb_data_recovery_unit);
@@ -53,26 +52,6 @@ module tb_data_recovery_unit ();
     @(posedge aclk);
     data_in = 8'b11110000;
     @(posedge aclk);
-    // data_in = 8'b10000111;
-    // @(posedge aclk);
-    // @(posedge aclk);
-    // data_in = 8'b00001111;
-    // @(posedge aclk);
-    // data_in = 8'b00011110;
-    // @(posedge aclk);
-    // data_in = 8'b00111100;
-    // @(posedge aclk);
-    // @(posedge aclk);
-    // data_in = 8'b00011110;
-    // @(posedge aclk);
-    // data_in = 8'b00001111;
-    // @(posedge aclk);
-    // data_in = 8'b10000111;
-    // @(posedge aclk);
-    // data_in = 8'b11000011;
-    // @(posedge aclk);
-
-
 
 
     repeat (10) @(posedge aclk);

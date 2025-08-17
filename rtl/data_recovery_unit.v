@@ -7,6 +7,7 @@ module data_recovery_unit (
     (* MARK_DEBUG="true" *)    output reg [1:0] num_bits
 
 );
+  localparam INITIAL_STATE = 2'b01;
   reg  [7:0] sw;
   wire [3:0] E;
 
@@ -27,7 +28,7 @@ module data_recovery_unit (
   reg [1:0] state;
   always @(posedge clk) begin
     if (!aresetn) begin
-      state <= 2'b00;
+      state <= INITIAL_STATE;
     end else begin
       state <= next_state;
     end
@@ -38,7 +39,7 @@ module data_recovery_unit (
   end
   always @(posedge clk) begin
     if (!aresetn) begin
-      next_state <= 2'b00;
+      next_state <= INITIAL_STATE;
     end else begin
       case (next_state)
         2'b00: begin
@@ -83,13 +84,20 @@ module data_recovery_unit (
       endcase
     end
   end
+  reg [7:0] sw_r;
+  reg q7_prev_r;
+  always @(posedge clk) begin
+    sw_r <= sw;
+    q7_prev_r <= q7_prev;
+
+  end
   always @(*) begin
     case (state)
-      2'b00:   out = (num_bits == 3) ? {sw[0], sw[4], ~sw[7]} : {1'b0, sw[0], sw[4]};
-      2'b01:   out = {1'b0, ~sw[1], ~sw[5]};
-      2'b11:   out = {1'b0, sw[2], sw[6]};
-      2'b10:   out = (num_bits == 1) ? {1'b0, 1'b0, ~sw[3]} : {1'b0, ~sw[3], ~sw[7]};
-      default: out = {1'b0, ~sw[1], ~sw[5]};
+      2'b00:   out = (num_bits == 3) ? {sw_r[0], sw_r[4], ~sw_r[7]} : {1'b0, sw_r[0], sw_r[4]};
+      2'b01:   out = {1'b0, ~sw_r[1], ~sw_r[5]};
+      2'b11:   out = {1'b0, sw_r[2], sw_r[6]};
+      2'b10:   out = (num_bits == 1) ? {1'b0, 1'b0, ~sw_r[3]} : {1'b0, ~sw_r[3], ~sw_r[7]};
+      default: out = {1'b0, ~sw_r[1], ~sw_r[5]};
     endcase
   end
 
