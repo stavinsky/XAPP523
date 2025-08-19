@@ -57,8 +57,8 @@ module tb_manchester_decoder2 ();
     repeat (5) @(posedge aclk);
     aresetn = 1;
 
-    send_bits(2);
-    send_bits(2);
+    send_bits(3);
+    send_bits(1);
     send_bits(2);
     send_bits(2);
     send_bits(2);

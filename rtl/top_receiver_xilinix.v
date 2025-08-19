@@ -57,12 +57,24 @@ module top_receiver_xilinix (
 
   wire [7:0] sw;
   (* MARK_DEBUG="true" *)wire [2:0] out;
+  wire [1:0] num_bits;
 
   data_recovery_unit dru (
       .sample_window(sample_window),
       .clk(clk_100),
       .aresetn(aresetn),
-      .out(out)
+      .out(out),
+      .num_bits(num_bits)
+  );
+  (* MARK_DEBUG="true" *)wire [1:0] decoded_bits;
+  (* MARK_DEBUG="TRUE" *)wire [1:0] num_decoded_bits;
+  manchester_decoder2 decoder (
+      .aclk(clk_100),
+      .aresetn(aresetn),
+      .bits(out),
+      .num_bits(num_bits),
+      .num_decoded_bits(num_decoded_bits),
+      .decoded_bits(decoded_bits)
   );
   assign test_out = clk_serial_out;
 endmodule
