@@ -21,13 +21,15 @@ module manchester_decoder2 (
     btd[num_bits] = stored;
     num_decoded_bits = 0;
     decoded_bits = 0;
-    nbtd = (stored_flag) ? num_bits + 1'd1 : {1'b0, num_bits};
+    // nbtd = (stored_flag) ? num_bits + 1'd1 : {1'b0, num_bits};
+    nbtd = {1'b0, num_bits} + (stored_flag ? 3'd1 : 3'd0);
     for (i = 0; i < 4; i = i + 1) begin
       if (nbtd > 1) begin
         if (btd[nbtd-1] ^ btd[nbtd-2]) begin
           num_decoded_bits = num_decoded_bits + 1;
           decoded_bits[num_decoded_bits-1] = btd[nbtd-2];
           nbtd = nbtd - 2;
+
         end else begin
           nbtd = nbtd - 1;
         end
@@ -50,7 +52,7 @@ module manchester_decoder2 (
       stored_flag_q <= stored_flag;
     end
   end
-  reg [7:0] shift;
+  (* MARK_DEBUG="TRUE" *) reg [7:0] shift;
   always @(posedge aclk) begin
     if (!aresetn) begin
       shift <= 0;
@@ -58,7 +60,7 @@ module manchester_decoder2 (
       if (num_decoded_bits == 1) begin
         shift <= {shift[6:0], decoded_bits[0]};
       end else if (num_decoded_bits == 2) begin
-        shift <= {shift[5:0], decoded_bits[1], decoded_bits[0]};
+        shift <= {shift[5:0], decoded_bits[0], decoded_bits[1]};
       end
     end
   end
