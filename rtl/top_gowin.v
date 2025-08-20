@@ -75,18 +75,19 @@ module top_gowin (
   //      .aresetn(aresetn)
   //  );
 
-  reg [4:0] cnt;
-  reg [31:0] data;
+  reg [5:0] cnt;
+  reg [55:0] data;
   reg data_bit;
   assign serial_out = clk108 ^ data_bit;
   always @(posedge clk108) begin
     if (!aresetn) begin
       cnt <= 0;
-      data <= 32'hAA550FF0;
+      data <= 56'hAAAAD5AABBCCDD;
       data_bit <= 0;
     end else begin
-      data_bit <= data[cnt];
-      cnt <= cnt + 1'b1;
+      data_bit <= data[55-cnt];
+      cnt <= (cnt == 55) ? 0 : cnt + 1'b1;
+
     end
   end
 
