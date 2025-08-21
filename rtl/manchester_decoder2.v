@@ -11,7 +11,7 @@ module manchester_decoder2 #(
 );
 
   reg [3:0] btd;  // bits to decode
-  reg [2:0] nbtd;
+  reg [2:0] nbtd;  //num bits to decode
   reg stored_flag_q;
   reg stored_flag;
   reg stored_q;
