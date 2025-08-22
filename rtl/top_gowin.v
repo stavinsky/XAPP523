@@ -55,15 +55,20 @@ module top_gowin (
     else ce_div <= ce_div + 2'd1;
   end
 
-  wire pclk_ce_clk = (ce_div == 2'b00);
+  // wire pclk_ce_clk = (ce_div == 2'b00);
+  wire pclk_ce_clk = ce_div[1];
   wire pclk_ce;
-   BUFG bufg1 (.I(pclk_ce_clk), .O(pclk_ce));
+  BUFG bufg1 (
+      .I(pclk_ce_clk),
+      .O(pclk_ce)
+  );
 
   reg [7:0] data[0:6];
   reg [2:0] cnt;
-  reg [7:0] data_8;
+  wire [7:0] data_8 = data[cnt];
   wire [15:0] man_out;
-  wire [7:0] data_out = (second_word) ? man_out[15:8] : man_out[7:0];
+  wire [7:0] data_out = (second_word) ? man_out[7:0] : man_out[15:8];
+  // wire [7:0] data_out = (second_word) ? man_out[15:8] : man_out[7:0];
   reg second_word;
   manchester_encoder me_1 (
       .data_in(data_8),
@@ -76,7 +81,7 @@ module top_gowin (
     data[3] = 8'hAA;
     data[4] = 8'hBB;
     data[5] = 8'hCC;
-    data[6] = 8'hFF;
+    data[6] = 8'hDD;
   end
 
 
@@ -85,25 +90,25 @@ module top_gowin (
       cnt <= 0;
       second_word <= 0;
     end else begin
-      cnt <= (cnt == 6) ? 0 : cnt + 1'b1;
-      data_8 <= data[cnt];
-      if (cnt == 6) begin
-        second_word <= ~second_word;
+      second_word <= ~second_word;
+      if (second_word) begin
+        cnt <= (cnt == 6) ? 0 : cnt + 1'b1;
       end
+
     end
   end
 
   OSER8 ser8_1 (
       .Q0(test_clk),
       .Q1(),
-      .D0(data_out[0]),
-      .D1(data_out[1]),
-      .D2(data_out[2]),
-      .D3(data_out[3]),
-      .D4(data_out[4]),
-      .D5(data_out[5]),
-      .D6(data_out[6]),
-      .D7(data_out[7]),
+      .D0(data_out[7]),
+      .D1(data_out[6]),
+      .D2(data_out[5]),
+      .D3(data_out[4]),
+      .D4(data_out[3]),
+      .D5(data_out[2]),
+      .D6(data_out[1]),
+      .D7(data_out[0]),
       .TX0(1'b1),
       .TX1(1'b1),
       .TX2(1'b1),
