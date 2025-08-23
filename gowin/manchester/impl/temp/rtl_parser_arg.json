@@ -1,0 +1,25 @@
+{
+ "Device" : "GW2AR-18C",
+ "Files" : [
+  {
+   "Path" : "/home/dev/dev/fpga/projects/manchester/rtl/gw_pll_300mhz.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "/home/dev/dev/fpga/projects/manchester/rtl/manchester_encoder.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "/home/dev/dev/fpga/projects/manchester/rtl/top_gowin.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "/home/dev/dev/fpga/projects/manchester/gowin/manchester/impl/temp/rtl_parser.result",
+ "Top" : "top_gowin",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}

@@ -17,14 +17,22 @@ module manchester_decoder2 #(
   reg stored_q;
   reg stored;
   reg [2:0] i;
+
+  reg [2:0] bits_r;
+  reg [1:0] num_bits_r;
+  always @(posedge aclk) begin
+    bits_r <= bits;
+    num_bits_r <= num_bits;
+
+  end
   always @* begin
-    btd = {1'b0, bits};
+    btd = {1'b0, bits_r};
     stored = stored_q;
     stored_flag = stored_flag_q;
-    btd[num_bits] = stored;
+    btd[num_bits_r] = stored;
     num_decoded_bits = 0;
     decoded_bits = 0;
-    nbtd = {1'b0, num_bits} + (stored_flag ? 3'd1 : 3'd0);
+    nbtd = {1'b0, num_bits_r} + (stored_flag ? 3'd1 : 3'd0);
     for (i = 0; i < 4; i = i + 1) begin
       if (nbtd > 1) begin
         if (btd[nbtd-1] ^ btd[nbtd-2]) begin

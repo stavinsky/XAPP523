@@ -2,8 +2,7 @@ module top_gowin (
     input       sys_clk,
     input       sys_rst_n,
     output wire serial_out_diff_p,
-    output wire serial_out_diff_n,
-    output wire test_clk
+    output wire serial_out_diff_n
 
 );
   wire clk108;
@@ -11,7 +10,7 @@ module top_gowin (
   wire in_clk;
 
 
-  Gowin_rPLL your_instance_name (
+  gw_pll_300mhz pll1 (
       .reset (sys_rst_n),
       .clkout(clk108),
       .lock  (aresetn),
@@ -21,41 +20,17 @@ module top_gowin (
   wire serial_out;
   assign serial_out = 1;
   TLVDS_OBUF tmds_bufds (
-      .I (serial_out),
+      .I (test_clk),
       .O (serial_out_diff_p),
       .OB(serial_out_diff_n)
   );
 
-
-
-  // reg [5:0] cnt;
-  // reg [55:0] data;
-  // reg data_bit;
-  // ODDR oddr1 (
-  //     .CLK(clk108),
-  //     .D0 (~data_bit),
-  //     .D1 (data_bit),
-  //     .Q0 (test_clk),
-  //     .TX (1'b1)
-  // );
-  // always @(posedge clk108) begin
-  //   if (!aresetn) begin
-  //     cnt <= 0;
-  //     data <= 56'hAAAAD5AABBCCEE;
-  //     data_bit <= 0;
-  //   end else begin
-  //     data_bit <= data[55-cnt];
-  //     cnt <= (cnt == 55) ? 0 : cnt + 1'b1;
-
-  //   end
-  // end
   reg [1:0] ce_div;
   always @(posedge clk108 or negedge aresetn) begin
     if (!aresetn) ce_div <= 2'b00;
     else ce_div <= ce_div + 2'd1;
   end
 
-  // wire pclk_ce_clk = (ce_div == 2'b00);
   wire pclk_ce_clk = ce_div[1];
   wire pclk_ce;
   BUFG bufg1 (
@@ -68,7 +43,6 @@ module top_gowin (
   wire [7:0] data_8 = data[cnt];
   wire [15:0] man_out;
   wire [7:0] data_out = (second_word) ? man_out[7:0] : man_out[15:8];
-  // wire [7:0] data_out = (second_word) ? man_out[15:8] : man_out[7:0];
   reg second_word;
   manchester_encoder me_1 (
       .data_in(data_8),
