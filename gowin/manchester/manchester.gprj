@@ -9,6 +9,6 @@
         <File path="/home/dev/dev/fpga/projects/manchester/rtl/manchester_encoder.v" type="file.verilog" enable="1"/>
         <File path="/home/dev/dev/fpga/projects/manchester/rtl/top_gowin.v" type="file.verilog" enable="1"/>
         <File path="/home/dev/dev/fpga/projects/manchester/const/tang_nano_9k.cst" type="file.cst" enable="1"/>
-        <File path="src/time_consts.sdc" type="file.sdc" enable="1"/>
+        <File path="/home/dev/dev/fpga/projects/manchester/const/timing.sdc" type="file.sdc" enable="1"/>
     </FileList>
 </Project>
