@@ -1,4 +1,6 @@
-/manchester
+/manchester/
+/xil_test_receiver/
+/gw_test_tx/
 ._*
 .Xil
 /vivado*

@@ -4,7 +4,7 @@
     "xci_name": "clk_wiz_0_1",
     "component_reference": "xilinx.com:ip:clk_wiz:6.0",
     "ip_revision": "15",
-    "gen_directory": "../../manchester/manchester/manchester.gen/sources_1/ip/clk_wiz_0_1",
+    "gen_directory": "../../xil_test_receiver/ip_gen",
     "parameters": {
       "component_parameters": {
         "Component_Name": [ { "value": "clk_wiz_0_1", "resolve_type": "user", "usage": "all" } ],
@@ -599,7 +599,7 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "15" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "../../manchester/manchester/manchester.gen/sources_1/ip/clk_wiz_0_1" } ],
+        "OUTPUTDIR": [ { "value": "../../xil_test_receiver/ip_gen" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2024.2.2" } ],

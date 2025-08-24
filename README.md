@@ -49,15 +49,9 @@ I don’t have a 2.5 V bank available on my receiver Zynq-7010 board, so **TMDS*
 ## TX
 1. TX board: [Tang Nano 20k](https://wiki.sipeed.com/hardware/en/tang/tang-nano-20k/nano-20k.html)  
 2. Set clock frequency to **100 MHz** via debugger MCU: [example](https://wiki.sipeed.com/hardware/en/tang/tang-nano-20k/example/unbox.html)  
-3. Create project for `GW2AR-LV18QN88C8/I7`  
-   1. Add files:  
-      - `const/timing.sdc` – timing constraints  
-      - `const/tang_nano_9k.cst` – IO constraints  
-      - `rtl/gw_pll_300mhz.v`  
-      - `rtl/manchester_encoder.v`  
-      - `rtl/top_gowin.v`  
-4. Build  
-5. Upload  
+3. run to build the project `gw_sh tcl/gw_test_tx.tcl`
+5. run upload firmware to the target```programmer_cli --device GW2AR-18C --run 2 --fs `realpath gw_test_tx/impl/pnr/gw_test_tx.fs` --location 28865```
+   1. the locateion is taken from  `programmer_cli --scan-cables`
 
 ## RX
 1. `cd` to project folder  
