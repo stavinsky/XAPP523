@@ -22,6 +22,7 @@ clean:
 	rm -rf vivado.*
 	rm -rf vivado*
 	rm -rf xil_test_receiver
+	rm -rf gw_test_tx
 
 
 PHONY: xil_project xil_synth xil_impl

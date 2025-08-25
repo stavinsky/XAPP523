@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Module name="top_gowin" Register="6" Lut="14" T_Register="6(6)" T_Lut="14(14)">
- <SubModule name="pll1"/>
-</Module>

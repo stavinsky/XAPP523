@@ -1,5 +1,5 @@
 # The Idea
-There is a document: [XAPP523 – LVDS 4x Asynchronous Oversampling](https://docs.amd.com/v/u/en-US/xapp523-lvds-4x-asynchronous-oversampling) describing the possibility of implementing an LVDS receiver using Giga Transceivers at speeds up to 1.25 Gbps (DDR).  
+There is a document: [XAPP523 – LVDS 4x Asynchronous Oversampling](https://docs.amd.com/v/u/en-US/xapp523-lvds-4x-asynchronous-oversampling) describing the possibility of implementing an LVDS receiver without using Giga Transceivers at speeds up to 1.25 Gbps (DDR).  
 The project goal is to try to implement the idea at lower frequencies in Verilog.
 
 The main idea is to use two SERDES blocks in oversample mode. This gives us the possibility to get 8 samples of the signal of interest per clock cycle.
@@ -51,27 +51,23 @@ I don’t have a 2.5 V bank available on my receiver Zynq-7010 board, so **TMDS*
 2. Set clock frequency to **100 MHz** via debugger MCU: [example](https://wiki.sipeed.com/hardware/en/tang/tang-nano-20k/example/unbox.html)  
 3. run to build the project `gw_sh tcl/gw_test_tx.tcl`
 5. run upload firmware to the target```programmer_cli --device GW2AR-18C --run 2 --fs `realpath gw_test_tx/impl/pnr/gw_test_tx.fs` --location 28865```
-   1. the locateion is taken from  `programmer_cli --scan-cables`
+   1. the location code is taken from  `programmer_cli --scan-cables`
 
 ## RX
 1. `cd` to project folder  
 2. `. /tools/Xilinx/Vivado/2024.2/settings64.sh`  
 3. Run:  
    ```bash
-   vivado -s tcl/project_full.tcl
+   make xil_project
    ```
-   (sometimes Vivado generates the script with an extra path, e.g. `./manchester/manchester/manchester.xpr`)  
+   this will create project in xil_test_receiver folder  
 4. Run:  
    ```bash
-   vivado manchester/manchester.xpr
+   vivado xil_test_receiver/xil_test_receiver.xpr
    ```
-   or  
-   ```bash
-   vivado manchester/manchester/manchester.xpr
-   ```
-   (**TODO:** fix the script)  
-5. Change device part to yours  
 6. Generate bitstream  
+
+also you can generate bitstream by `make xil_impl`
 
 ## RX files
  - rtl/oversample.v - extracting 8 bit per clock by 2 serdes
