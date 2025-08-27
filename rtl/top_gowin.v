@@ -10,7 +10,7 @@ module top_gowin (
   wire in_clk;
 
 
-  gw_pll_300mhz pll1 (
+  Gowin_rPLL pll1 (
       .reset (sys_rst_n),
       .clkout(clk108),
       .lock  (aresetn),

@@ -13,22 +13,16 @@ module top_receiver_xilinix (
   wire clk_54_90;
   wire clk_200;
   wire clk_fb;
-  wire clk_div;
-  wire clk_dbg;
   wire clk_100;
-  wire clk_serial_out;
   clk_wiz_0_1 pll1 (
       .clk_in1(clk),
       .locked(aresetn),
       .clk_0(clk_54),
       .clk_90(clk_54_90),
       .clk_200(clk_200),
-      .clk_div(clk_div),
-      .clk_dbg(clk_dbg),
       .clkfb_in(clk_fb),
       .clkfb_out(clk_fb),
-      .clk_100(clk_100),
-      .serial_out_clk(clk_serial_out)
+      .clk_100(clk_100)
   );
   wire clk_54_buf;
   wire clk_54_90_buf;
@@ -76,6 +70,5 @@ module top_receiver_xilinix (
       .num_decoded_bits(num_decoded_bits),
       .decoded_bits(decoded_bits)
   );
-  assign test_out = clk_serial_out;
 endmodule
 

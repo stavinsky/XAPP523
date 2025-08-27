@@ -49,7 +49,7 @@ module oversample (
   wire din_delayed_1;
   IDELAYE2 #(
       .IDELAY_TYPE ("FIXED"),
-      .IDELAY_VALUE(18),        // No delay
+      .IDELAY_VALUE(6),         // No delay
       .DELAY_SRC   ("IDATAIN")
   ) idelay1 (
       .C      (1'b0),          // Not used in FIXED mode

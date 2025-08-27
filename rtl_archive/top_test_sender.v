@@ -1,20 +1,95 @@
 `timescale 1ns / 1ps
 
 module top_test_sender (
-    output wire serial_out,
-    input  wire clk
-);
-  wire clk_100;
-  wire aresetn;
-  clk_wiz_0 pll (
-      .clk_in1 (clk),
-      .clk_out1(clk_100),
-      .locked  (aresetn)
+    input       clk,
+    output wire serial_out_diff_p,
+    output wire serial_out_diff_n
 
+);
+  wire clk108;
+  wire aresetn;
+  wire in_clk;
+
+
+  gw_pll_300mhz pll1 (
+      .reset (sys_rst_n),
+      .clkout(clk108),
+      .lock  (aresetn),
+      .clkin (sys_clk)
   );
-  test_pattern tp1 (
-      .clk(clk_100),
-      .aresetn(aresetn),
-      .serial_out(serial_out)
+
+  wire serial_out;
+  assign serial_out = 1;
+  TLVDS_OBUF tmds_bufds (
+      .I (test_clk),
+      .O (serial_out_diff_p),
+      .OB(serial_out_diff_n)
   );
-endmodule
+
+  reg [1:0] ce_div;
+  always @(posedge clk108 or negedge aresetn) begin
+    if (!aresetn) ce_div <= 2'b00;
+    else ce_div <= ce_div + 2'd1;
+  end
+
+  wire pclk_ce_clk = ce_div[1];
+  wire pclk_ce;
+  BUFG bufg1 (
+      .I(pclk_ce_clk),
+      .O(pclk_ce)
+  );
+
+  reg [7:0] data[0:6];
+  reg [2:0] cnt;
+  wire [7:0] data_8 = data[cnt];
+  wire [15:0] man_out;
+  wire [7:0] data_out = (second_word) ? man_out[7:0] : man_out[15:8];
+  reg second_word;
+  manchester_encoder me_1 (
+      .data_in(data_8),
+      .manchester_out(man_out)
+  );
+  initial begin
+    data[0] = 8'hAA;
+    data[1] = 8'hAA;
+    data[2] = 8'hD5;
+    data[3] = 8'hAA;
+    data[4] = 8'hBB;
+    data[5] = 8'hCC;
+    data[6] = 8'hDD;
+  end
+
+
+  always @(posedge pclk_ce) begin
+    if (!aresetn) begin
+      cnt <= 0;
+      second_word <= 0;
+    end else begin
+      second_word <= ~second_word;
+      if (second_word) begin
+        cnt <= (cnt == 6) ? 0 : cnt + 1'b1;
+      end
+
+    end
+  end
+
+  OSER8 ser8_1 (
+      .Q0(test_clk),
+      .Q1(),
+      .D0(data_out[7]),
+      .D1(data_out[6]),
+      .D2(data_out[5]),
+      .D3(data_out[4]),
+      .D4(data_out[3]),
+      .D5(data_out[2]),
+      .D6(data_out[1]),
+      .D7(data_out[0]),
+      .TX0(1'b1),
+      .TX1(1'b1),
+      .TX2(1'b1),
+      .TX3(1'b1),
+      .PCLK(pclk_ce),
+      .FCLK(clk108),
+      .RESET(~aresetn)
+  );
+
