@@ -43,6 +43,10 @@ set_property IOSTANDARD LVCMOS33 [get_ports test_out]
 #set_property PACKAGE_PIN N20 [get_ports test_out_p]
 #set_property IOSTANDARD TMDS_33 [get_ports test_out_p]
 
+set_max_delay -datapath_only -from [get_pins {oversample_inst/iserdes_inst/Q1 oversample_inst/iserdes_inst/Q2 oversample_inst/iserdes_inst/Q3 oversample_inst/iserdes_inst/Q4 oversample_inst/iserdes_inst_90/Q1 oversample_inst/iserdes_inst_90/Q2 oversample_inst/iserdes_inst_90/Q3 oversample_inst/iserdes_inst_90/Q4}] -to [get_pins -hierarchical *sw_reg*/D*] 0.600
+
+
+
 
 
 

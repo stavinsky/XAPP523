@@ -7,7 +7,7 @@ module top (
     input wire serial_in_n
 );
 
-  (* MARK_DEBUG="true" *) wire serial_out;
+  wire serial_out;
   OBUFDS #(
       .IOSTANDARD("DEFAULT"),  // Specify the output I/O standard
       .SLEW      ("FAST")      // Specify the output slew rate
@@ -16,7 +16,7 @@ module top (
       .OB(serial_out_diff_n),  // Diff_n output (connect directly to top-level port)
       .I (serial_out)          // Buffer input
   );
-  (* MARK_DEBUG="true" *) wire serial_in;
+  wire serial_in;
   IBUFDS #(
       .DIFF_TERM   ("TRUE"),    // Differential Termination
       .IBUF_LOW_PWR("FALSE"),   // Low power="TRUE", Highest performance="FALSE" 

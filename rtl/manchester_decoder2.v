@@ -6,7 +6,9 @@ module manchester_decoder2 #(
     input wire [2:0] bits,
     input wire [1:0] num_bits,
     output reg [1:0] decoded_bits,
-    output reg [1:0] num_decoded_bits
+    output reg [1:0] num_decoded_bits,
+    output reg [7:0] decoded_byte,
+    output reg byte_valid
 
 );
 
@@ -62,7 +64,7 @@ module manchester_decoder2 #(
       stored_flag_q <= stored_flag;
     end
   end
-  (* MARK_DEBUG="TRUE" *) reg [15:0] shift;
+  reg [15:0] shift;
   always @(posedge aclk) begin
     if (!aresetn) begin
       shift <= 0;
@@ -76,10 +78,8 @@ module manchester_decoder2 #(
   end
   localparam state_preamble = 0;
   localparam state_data = 1;
-  (* MARK_DEBUG="TRUE" *) reg byte_valid;
   reg [1:0] state;
   reg [3:0] cnt;
-  (* MARK_DEBUG="TRUE" *) reg [7:0] decoded_byte;
   reg [3:0] byte_counter;
 
   always @(posedge aclk) begin
