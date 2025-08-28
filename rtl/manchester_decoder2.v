@@ -1,5 +1,5 @@
 module manchester_decoder2 #(
-    parameter FRAME_SIZE = 4
+    parameter FRAME_SIZE = 6
 ) (
     input wire aclk,
     input wire aresetn,

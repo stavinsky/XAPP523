@@ -4,9 +4,8 @@
 module top_receiver_xilinix (
     input  wire clk,
     input  wire serial_in_p,
-    input  wire serial_in_n,
-    output wire test_out
-);
+    input  wire serial_in_n
+ );
 
   wire aresetn;
   wire clk_54;
@@ -104,6 +103,7 @@ module top_receiver_xilinix (
   (* MARK_DEBUG="TRUE" *) reg data_out_valid;
   (* MARK_DEBUG="TRUE" *) reg [7:0] data_out;
   always @(posedge clk_div) begin
+    data_out_valid <= 1'b0;
     if (byte_valid_latch) begin
       data_out_valid <= 1'b1;
       data_out <= data_byte;

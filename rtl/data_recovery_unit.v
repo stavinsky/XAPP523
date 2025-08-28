@@ -85,10 +85,8 @@ module data_recovery_unit (
     end
   end
   reg [7:0] sw_r;
-  reg q7_prev_r;
   always @(posedge clk) begin
     sw_r <= sw;
-    q7_prev_r <= q7_prev;
 
   end
   always @(*) begin
