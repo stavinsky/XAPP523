@@ -64,15 +64,24 @@ module manchester_decoder2 #(
       stored_flag_q <= stored_flag;
     end
   end
+
+  reg [1:0] num_decoded_bits_r;
+  reg [1:0] decoded_bits_r;
+
+  always @(posedge aclk) begin
+    num_decoded_bits_r <= num_decoded_bits;
+    decoded_bits_r <= decoded_bits;
+  end
+
   reg [15:0] shift;
   always @(posedge aclk) begin
     if (!aresetn) begin
       shift <= 0;
     end else begin
-      if (num_decoded_bits == 1) begin
-        shift <= {shift[14:0], decoded_bits[0]};
-      end else if (num_decoded_bits == 2) begin
-        shift <= {shift[13:0], decoded_bits[0], decoded_bits[1]};
+      if (num_decoded_bits_r == 1) begin
+        shift <= {shift[14:0], decoded_bits_r[0]};
+      end else if (num_decoded_bits_r == 2) begin
+        shift <= {shift[13:0], decoded_bits_r[0], decoded_bits_r[1]};
       end
     end
   end
@@ -117,7 +126,7 @@ module manchester_decoder2 #(
             end
           end else begin
             decoded_byte <= decoded_byte;
-            cnt <= cnt + {2'b0, num_decoded_bits};
+            cnt <= cnt + {2'b0, num_decoded_bits_r};
             byte_valid <= 0;
           end
         end

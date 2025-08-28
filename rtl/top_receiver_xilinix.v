@@ -15,8 +15,13 @@ module top_receiver_xilinix (
   wire clk_fb;
   wire clk_fast;
   wire clk_div;
+  wire clk_g;
+  BUFG bufg1 (
+      .I(clk),
+      .O(clk_g)
+  );
   clk_wiz_0_1 pll1 (
-      .clk_in1(clk),
+      .clk_in1(clk_g),
       .locked(aresetn),
       .clk_0(clk_54),
       .clk_90(clk_54_90),
@@ -24,7 +29,7 @@ module top_receiver_xilinix (
       .clkfb_in(clk_fb),
       .clkfb_out(clk_fb),
       .clk_fast(clk_fast),
-    .clk_div(clk_div)
+      .clk_div(clk_div)
   );
   wire clk_54_buf;
   wire clk_54_90_buf;
@@ -76,9 +81,9 @@ module top_receiver_xilinix (
       .decoded_byte(decoded_byte),
       .byte_valid(byte_valid)
   );
-  (* MARK_DEBUG="TRUE" *) reg [7:0] data_byte;
+  reg [7:0] data_byte;
   reg [1:0] delay_counter;
-  (* MARK_DEBUG="TRUE" *) reg byte_valid_latch;
+  reg byte_valid_latch;
 
   always @(posedge clk_fast) begin
     if (!aresetn) begin
@@ -94,7 +99,14 @@ module top_receiver_xilinix (
       end else begin
         delay_counter <= delay_counter + 1;
       end
-
+    end
+  end
+  (* MARK_DEBUG="TRUE" *) reg data_out_valid;
+  (* MARK_DEBUG="TRUE" *) reg [7:0] data_out;
+  always @(posedge clk_div) begin
+    if (byte_valid_latch) begin
+      data_out_valid <= 1'b1;
+      data_out <= data_byte;
     end
   end
 endmodule
