@@ -11,14 +11,6 @@
 
 
 
-create_pblock sw_reg1
-add_cells_to_pblock [get_pblocks sw_reg1] [get_cells -quiet [list {dru/sw_reg[0]} {dru/sw_reg[1]} {dru/sw_reg[2]} {dru/sw_reg[3]} {dru/sw_reg[4]} {dru/sw_reg[5]} {dru/sw_reg[6]} {dru/sw_reg[7]}]]
-resize_pblock [get_pblocks sw_reg1] -add {SLICE_X42Y19:SLICE_X43Y20}
-
-create_pblock sw_r1
-add_cells_to_pblock [get_pblocks sw_r1] [get_cells -quiet [list {dru/sw_r_reg[0]} {dru/sw_r_reg[1]} {dru/sw_r_reg[2]} {dru/sw_r_reg[3]} {dru/sw_r_reg[4]} {dru/sw_r_reg[5]} {dru/sw_r_reg[6]} {dru/sw_r_reg[7]}]]
-resize_pblock [get_pblocks sw_r1] -add {SLICE_X40Y19:SLICE_X41Y20}
-
 
 
 create_debug_core u_ila_0 ila

@@ -2,10 +2,10 @@
 `timescale 1ns / 1ps
 
 module top_receiver_xilinix (
-    input  wire clk,
-    input  wire serial_in_p,
-    input  wire serial_in_n
- );
+    input wire clk,
+    input wire serial_in_p,
+    input wire serial_in_n
+);
 
   wire aresetn;
   wire clk_54;
@@ -109,5 +109,7 @@ module top_receiver_xilinix (
       data_out <= data_byte;
     end
   end
+
+
 endmodule
 
