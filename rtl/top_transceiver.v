@@ -13,8 +13,8 @@ module top (
 
   tx_clk pll1_inst (
       .clkfb_in(clk_fb),
-      .clk_out1(clk_fast),  //400 mhz
-      .clk_out2(clk_div),  //100 mhz
+      .clk_out1(clk_fast),  //400 mhz (raw)
+      .clk_out2(clk_div),  //100 mhz (BUFG)
       .clkfb_out(clk_fb),
       .locked(aresetn),
       .clk_in1(sys_clk)
@@ -38,12 +38,11 @@ module top (
 
   reg [7:0] data[0:8];
   reg [3:0] cnt;
-  wire [7:0] man_in = data[cnt];
+  reg [7:0] man_in;
   wire [15:0] man_out;
   reg second_word;
   reg [7:0] man_hi;
   reg [7:0] man_lo;
-  //wire [7:0] data_out = (second_word) ? man_out[7:0] : man_out[15:8];
   reg [7:0] data_out;
 
   manchester_encoder me_1 (
@@ -63,18 +62,19 @@ module top (
   end
 
 
+
   always @(posedge clk_div) begin
     if (!aresetn) begin
+      second_word <= 1'b0;
       cnt <= 0;
-      second_word <= 0;
-    end else begin
-      {man_hi, man_lo} <= man_out;
+    end
+    begin
+      man_hi <= man_out[15:8];
+      man_lo <= man_out[7:0];
       second_word <= ~second_word;
-      data_out <= (~second_word) ? man_lo : man_hi;
-      if (second_word) begin
-        cnt <= (cnt == 8) ? 0 : cnt + 1'b1;
-      end
-
+      cnt <= (second_word) ? cnt + 1 : cnt;
+      man_in <= (second_word) ? data[cnt] : man_in;
+      data_out <= (second_word) ? man_hi : man_lo;
     end
   end
 

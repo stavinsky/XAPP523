@@ -8,7 +8,8 @@ module manchester_decoder2 #(
     output reg [1:0] decoded_bits,
     output reg [1:0] num_decoded_bits,
     output reg [7:0] decoded_byte,
-    output reg byte_valid
+    output reg byte_valid,
+    output reg tx_end
 
 );
 
@@ -96,10 +97,12 @@ module manchester_decoder2 #(
       state <= state_preamble;
       cnt <= 0;
       byte_counter <= 0;
+      tx_end <= 1'b0;
     end else begin
       case (state)
         state_preamble: begin
           byte_valid <= 0;
+          tx_end <= 0;
           if (shift == 16'hAAD5) begin
             state <= state_data;
             cnt   <= 0;
@@ -114,6 +117,7 @@ module manchester_decoder2 #(
             if (byte_counter == FRAME_SIZE - 1) begin
               byte_counter <= 0;
               state <= state_preamble;
+              tx_end <= 1;
             end
           end else if (cnt == 8) begin
             decoded_byte <= shift[8:1];
@@ -123,6 +127,7 @@ module manchester_decoder2 #(
             if (byte_counter == FRAME_SIZE - 1) begin
               byte_counter <= 0;
               state <= state_preamble;
+              tx_end <= 1;
             end
           end else begin
             decoded_byte <= decoded_byte;
