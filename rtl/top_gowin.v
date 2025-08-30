@@ -38,8 +38,8 @@ module top_gowin (
       .O(pclk_ce)
   );
 
-  reg [7:0] data[0:6];
-  reg [2:0] cnt;
+  reg [7:0] data[0:8];
+  reg [3:0] cnt;
   wire [7:0] data_8 = data[cnt];
   wire [15:0] man_out;
   wire [7:0] data_out = (second_word) ? man_out[7:0] : man_out[15:8];
@@ -56,6 +56,8 @@ module top_gowin (
     data[4] = 8'hBB;
     data[5] = 8'hCC;
     data[6] = 8'hDD;
+    data[7] = 8'hEE;
+    data[8] = 8'hFF;
   end
 
 
@@ -66,7 +68,7 @@ module top_gowin (
     end else begin
       second_word <= ~second_word;
       if (second_word) begin
-        cnt <= (cnt == 6) ? 0 : cnt + 1'b1;
+        cnt <= (cnt == 8) ? 0 : cnt + 1'b1;
       end
 
     end

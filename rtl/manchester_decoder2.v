@@ -1,12 +1,15 @@
 module manchester_decoder2 #(
-    parameter FRAME_SIZE = 4
+    parameter FRAME_SIZE = 6
 ) (
     input wire aclk,
     input wire aresetn,
     input wire [2:0] bits,
     input wire [1:0] num_bits,
     output reg [1:0] decoded_bits,
-    output reg [1:0] num_decoded_bits
+    output reg [1:0] num_decoded_bits,
+    output reg [7:0] decoded_byte,
+    output reg byte_valid,
+    output reg tx_end
 
 );
 
@@ -62,24 +65,31 @@ module manchester_decoder2 #(
       stored_flag_q <= stored_flag;
     end
   end
-  (* MARK_DEBUG="TRUE" *) reg [15:0] shift;
+
+  reg [1:0] num_decoded_bits_r;
+  reg [1:0] decoded_bits_r;
+
+  always @(posedge aclk) begin
+    num_decoded_bits_r <= num_decoded_bits;
+    decoded_bits_r <= decoded_bits;
+  end
+
+  reg [15:0] shift;
   always @(posedge aclk) begin
     if (!aresetn) begin
       shift <= 0;
     end else begin
-      if (num_decoded_bits == 1) begin
-        shift <= {shift[14:0], decoded_bits[0]};
-      end else if (num_decoded_bits == 2) begin
-        shift <= {shift[13:0], decoded_bits[0], decoded_bits[1]};
+      if (num_decoded_bits_r == 1) begin
+        shift <= {shift[14:0], decoded_bits_r[0]};
+      end else if (num_decoded_bits_r == 2) begin
+        shift <= {shift[13:0], decoded_bits_r[0], decoded_bits_r[1]};
       end
     end
   end
   localparam state_preamble = 0;
   localparam state_data = 1;
-  (* MARK_DEBUG="TRUE" *) reg byte_valid;
   reg [1:0] state;
   reg [3:0] cnt;
-  (* MARK_DEBUG="TRUE" *) reg [7:0] decoded_byte;
   reg [3:0] byte_counter;
 
   always @(posedge aclk) begin
@@ -87,10 +97,12 @@ module manchester_decoder2 #(
       state <= state_preamble;
       cnt <= 0;
       byte_counter <= 0;
+      tx_end <= 1'b0;
     end else begin
       case (state)
         state_preamble: begin
           byte_valid <= 0;
+          tx_end <= 0;
           if (shift == 16'hAAD5) begin
             state <= state_data;
             cnt   <= 0;
@@ -105,6 +117,7 @@ module manchester_decoder2 #(
             if (byte_counter == FRAME_SIZE - 1) begin
               byte_counter <= 0;
               state <= state_preamble;
+              tx_end <= 1;
             end
           end else if (cnt == 8) begin
             decoded_byte <= shift[8:1];
@@ -114,10 +127,11 @@ module manchester_decoder2 #(
             if (byte_counter == FRAME_SIZE - 1) begin
               byte_counter <= 0;
               state <= state_preamble;
+              tx_end <= 1;
             end
           end else begin
             decoded_byte <= decoded_byte;
-            cnt <= cnt + {2'b0, num_decoded_bits};
+            cnt <= cnt + {2'b0, num_decoded_bits_r};
             byte_valid <= 0;
           end
         end

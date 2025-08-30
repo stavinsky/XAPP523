@@ -4,7 +4,7 @@ module data_recovery_unit (
     input wire aresetn,
 
     output reg [2:0] out,
-    (* MARK_DEBUG="true" *)    output reg [1:0] num_bits
+    output reg [1:0] num_bits
 
 );
   localparam INITIAL_STATE = 2'b01;
@@ -24,7 +24,7 @@ module data_recovery_unit (
   assign E[2] = (sw[2] ^ ~sw[3]) | (sw[7] ^ ~sw[6]);
   assign E[3] = (sw[4] ^ ~sw[3]) | (sw[0] ^ ~q7_prev);
 
-  (* MARK_DEBUG="true" *)reg [1:0] next_state;
+  reg [1:0] next_state;
   reg [1:0] state;
   always @(posedge clk) begin
     if (!aresetn) begin
@@ -85,10 +85,8 @@ module data_recovery_unit (
     end
   end
   reg [7:0] sw_r;
-  reg q7_prev_r;
   always @(posedge clk) begin
     sw_r <= sw;
-    q7_prev_r <= q7_prev;
 
   end
   always @(*) begin
