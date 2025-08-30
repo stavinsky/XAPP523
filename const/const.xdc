@@ -10,7 +10,7 @@ set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports clk]
 #set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 #set_property BITSTREAM.CONFIG.SPI_FALL_EDGE Yes [current_design]
 
-#create_clock -period 20.000 -name clk_50M [get_ports clk]
+create_clock -period 20.000 -name clk_50M [get_ports clk]
 
 
 
@@ -36,12 +36,32 @@ set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports clk]
 set_property PACKAGE_PIN T20 [get_ports serial_in_p]
 set_property IOSTANDARD TMDS_33 [get_ports serial_in_p]
 set_property IOSTANDARD TMDS_33 [get_ports serial_in_n]
-set_property LOC MMCME2_ADV_X0Y0 [get_cells pll1/inst/mmcm_adv_inst]
-set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets pll1/inst/clk_in1_clk_wiz_0_1]
-set_property PACKAGE_PIN N20 [get_ports test_out]
-set_property IOSTANDARD LVCMOS33 [get_ports test_out]
+#set_property LOC MMCME2_ADV_X0Y0 [get_cells pll1/inst/mmcm_adv_inst]
+#set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets pll1/inst/clk_in1_clk_wiz_0_1]
+#set_property PACKAGE_PIN N20 [get_ports test_out]
+#set_property IOSTANDARD LVCMOS33 [get_ports test_out]
 #set_property PACKAGE_PIN N20 [get_ports test_out_p]
 #set_property IOSTANDARD TMDS_33 [get_ports test_out_p]
+
+#set_max_delay -datapath_only -from [get_pins {oversample_inst/iserdes_inst/Q1 oversample_inst/iserdes_inst/Q2 oversample_inst/iserdes_inst/Q3 oversample_inst/iserdes_inst/Q4 oversample_inst/iserdes_inst_90/Q1 oversample_inst/iserdes_inst_90/Q2 oversample_inst/iserdes_inst_90/Q3 oversample_inst/iserdes_inst_90/Q4}] -to [get_pins -hierarchical *sw_reg*/D*] 0.600
+set_false_path -from [get_ports {serial_in_p serial_in_n}]
+
+
+# should be adjustted to specific port
+create_pblock sw_reg1
+add_cells_to_pblock [get_pblocks sw_reg1] [get_cells -quiet [list {dru/sw_reg[0]} {dru/sw_reg[1]} {dru/sw_reg[2]} {dru/sw_reg[3]} {dru/sw_reg[4]} {dru/sw_reg[5]} {dru/sw_reg[6]} {dru/sw_reg[7]}]]
+resize_pblock [get_pblocks sw_reg1] -add {SLICE_X42Y19:SLICE_X43Y20}
+
+create_pblock sw_r1
+add_cells_to_pblock [get_pblocks sw_r1] [get_cells -quiet [list {dru/sw_r_reg[0]} {dru/sw_r_reg[1]} {dru/sw_r_reg[2]} {dru/sw_r_reg[3]} {dru/sw_r_reg[4]} {dru/sw_r_reg[5]} {dru/sw_r_reg[6]} {dru/sw_r_reg[7]}]]
+resize_pblock [get_pblocks sw_r1] -add {SLICE_X40Y19:SLICE_X41Y20}
+
+
+
+
+
+
+
 
 
 

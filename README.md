@@ -1,3 +1,8 @@
+# Updates
+![alt text](docs/images/gowin_tx.png)
+this is the error rate on 400MHz now
+
+unfortunately xilinx tx is not showing same results. Probably the problem is with my implemenation. I will dig into that later. For now for xilinx it is about 0.3 error rate. 
 # The Idea
 There is a document: [XAPP523 – LVDS 4x Asynchronous Oversampling](https://docs.amd.com/v/u/en-US/xapp523-lvds-4x-asynchronous-oversampling) describing the possibility of implementing an LVDS receiver without using Giga Transceivers at speeds up to 1.25 Gbps (DDR).  
 The project goal is to try to implement the idea at lower frequencies in Verilog.

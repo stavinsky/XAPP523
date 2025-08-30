@@ -6,6 +6,9 @@ add_files {
     ip/clk_wiz_0_1/clk_wiz_0_1.xci
     rtl/oversample.v
 
+}
+add_files -fileset constrs_1 {
     const/const.xdc
     const/xil_debug.xdc
+
 }
