@@ -6,4 +6,3 @@ add_files {
 }
 add_files -fileset constrs_1 {
     const/test_sender.xdc
-

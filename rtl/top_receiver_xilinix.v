@@ -66,8 +66,6 @@ module top_receiver_xilinix (
       .out(out),
       .num_bits(num_bits)
   );
-  wire [1:0] decoded_bits;
-  wire [1:0] num_decoded_bits;
   wire [7:0] decoded_byte;
   wire byte_valid;
   wire tx_end;
@@ -76,8 +74,6 @@ module top_receiver_xilinix (
       .aresetn(aresetn),
       .bits(out),
       .num_bits(num_bits),
-      .num_decoded_bits(num_decoded_bits),
-      .decoded_bits(decoded_bits),
       .decoded_byte(decoded_byte),
       .byte_valid(byte_valid),
       .tx_end(tx_end)

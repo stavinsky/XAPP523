@@ -5,6 +5,7 @@ add_files {
     rtl/data_recovery_unit.v
     ip/clk_wiz_0_1/clk_wiz_0_1.xci
     rtl/oversample.v
+    rtl/data_repack.v
 
 }
 add_files -fileset constrs_1 {
