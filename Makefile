@@ -4,7 +4,7 @@ VVP=vvp
 ALL_V_FILES := $(wildcard rtl/*.v)
 RTL_V_FILES := $(filter-out rtl/tb_%.v, $(ALL_V_FILES))
 
-TESTBENCHES =  data_recovery_unit manchester_decoder2
+TESTBENCHES =  data_recovery_unit manchester_decoder2 axis_pattern_generator axis_manchester_encoder
 
 tb: clean $(addsuffix .vcd, $(addprefix tb_, $(TESTBENCHES)))
 

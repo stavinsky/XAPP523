@@ -34,10 +34,10 @@ module oversample (
   wire din_delayed_0;
   IDELAYE2 #(
       .IDELAY_TYPE ("FIXED"),
-      .IDELAY_VALUE(0),         // No delay
+      .IDELAY_VALUE(0),
       .DELAY_SRC   ("IDATAIN")
   ) idelay0 (
-      .C      (1'b0),          // Not used in FIXED mode
+      .C      (1'b0),          
       .CE     (1'b0),
       .INC    (1'b0),
       .LD     (1'b0),
@@ -48,10 +48,10 @@ module oversample (
   wire din_delayed_1;
   IDELAYE2 #(
       .IDELAY_TYPE ("FIXED"),
-      .IDELAY_VALUE(4),         // No delay
+      .IDELAY_VALUE(4),         
       .DELAY_SRC   ("IDATAIN")
   ) idelay1 (
-      .C      (1'b0),          // Not used in FIXED mode
+      .C      (1'b0),          
       .CE     (1'b0),
       .INC    (1'b0),
       .LD     (1'b0),
