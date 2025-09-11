@@ -33,7 +33,7 @@ module tb_axis_manchester_encoder;
 
   // Wave dump (optional)
   initial begin
-    $dumpfile("tb_manchester_encoder.vcd");
+    $dumpfile("tb_axis_manchester_encoder.vcd");
     $dumpvars(0, tb_axis_manchester_encoder);
   end
 

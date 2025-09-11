@@ -6,7 +6,12 @@ RTL_V_FILES := $(filter-out rtl/tb_%.v, $(ALL_V_FILES))
 
 TESTBENCHES =  data_recovery_unit manchester_decoder2 axis_pattern_generator axis_manchester_encoder
 
+
 tb: clean $(addsuffix .vcd, $(addprefix tb_, $(TESTBENCHES)))
+
+
+tb_axis_manchester_encoder: rtl/manch_pkg.sv rtl/tb_axis_manchester_encoder.sv rtl/axis_manchester_encoder.sv 
+	$(IVERILOG) -g2012 -o $@ $^
 
 tb_%: rtl/tb_%.v  
 	$(IVERILOG) -o $@ $^
@@ -17,12 +22,13 @@ tb_%: rtl/tb_%.v
 .PHONY: clean
 
 clean:
-	rm -f tb_* *.vcd
+# 	rm -f tb_* *.vcd
 	find . -name "._*" -exec rm {} \;
 	rm -rf vivado.*
 	rm -rf vivado*
 	rm -rf xil_test_receiver
 	rm -rf gw_test_tx
+
 
 
 PHONY: xil_project xil_synth xil_impl
