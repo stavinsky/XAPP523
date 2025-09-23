@@ -12,6 +12,7 @@ module top (
   wire clk_fb;
 
   tx_clk pll1_inst (
+
       .clkfb_in(clk_fb),
       .clk_out1(clk_fast),  //400 mhz (raw)
       .clk_out2(clk_div),  //100 mhz (raw)
@@ -56,7 +57,7 @@ module top (
       .m_axis_tready(pattern_tready)
   );
 
-  (* MARK_DEBUG="TRUE" *) wire [7:0] encoder_tdata;
+  wire [7:0] encoder_tdata;
   wire encoder_tvalid;
   wire encoder_tready = 1;
   axis_manchester_encoder encoder (
